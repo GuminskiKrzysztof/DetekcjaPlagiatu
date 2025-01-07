@@ -1,6 +1,37 @@
 import os
 import json
 import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from selenium.webdriver.common.by import By
+import time
+
+
+
+def get_urls(url="https://www.kaggle.com/search?q=chatbot+in%3Anotebooks"):
+    service = Service(executable_path="C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu/msedgedriver.exe")
+
+    driver = webdriver.Edge(service=service)
+
+    urls = []
+    driver.get(url)
+    time.sleep(5)
+
+    ul_element = driver.find_element(By.XPATH, '//*[@id="results"]/ul[1]')
+
+    # Znajdź wszystkie linki <a> w <ul>
+    a_elements = ul_element.find_elements(By.TAG_NAME, "a")
+
+    for a in a_elements:
+        if a.get_attribute("role") == "link":
+            href = a.get_attribute("href")
+            if href and href.startswith("/"):
+                href = "https://www.kaggle.com" + href
+            urls.append(href)
+    driver.quit()
+
+    return urls
+
 
 
 def setup_kaggle_credentials(base_path):
@@ -30,23 +61,28 @@ def extract_code_from_notebook(notebook_path):
     for cell in notebook.get("cells", []):
         if cell.get("cell_type") == "code":
             code_cells.append("".join(cell.get("source", [])))
-    return code_cells
+    full_code = "\n".join(code_cells)
+    return full_code
 
 
-def save_code_to_csv(codes, output_csv_path):
+def save_code_to_csv(all_codes, output_csv_path):
     """
-    Zapisz wyodrębniony kod do pliku CSV.
+    Zapisz wszystkie kody do jednego pliku CSV.
     """
-    df = pd.DataFrame({"code": codes})
-    df.to_csv(output_csv_path, index=False, encoding="utf-8")
+    df = pd.DataFrame(all_codes)
+    if os.path.exists(output_csv_path):
+        df.to_csv(output_csv_path, index=False, encoding="utf-8", mode='a', header=False)
+    else:
+        df.to_csv(output_csv_path, index=False, encoding="utf-8", mode='w', header=True)
 
 
-def process_kaggle_projects(project_urls, base_path, output_dir="./output"):
+def process_kaggle_projects(project_urls, base_path, output_csv_path):
     """
-    Pobierz, wyodrębnij kod i zapisz do CSV dla listy projektów.
+    Pobierz, wyodrębnij kod i zapisz do jednego pliku CSV dla listy projektów.
     """
     setup_kaggle_credentials(base_path)  # Przejdź do katalogu z kaggle.json
-    os.makedirs(output_dir, exist_ok=True)
+
+    all_codes = []  # Lista na wszystkie kody i ich kategorie
 
     for url in project_urls:
         # Wyodrębnij autora i nazwę projektu z URL
@@ -63,25 +99,25 @@ def process_kaggle_projects(project_urls, base_path, output_dir="./output"):
         # Wyodrębnij kod
         if os.path.exists(notebook_path):
             print(f"Wyodrębniam kod z: {notebook_title}")
-            code_cells = extract_code_from_notebook(notebook_path)
+            code = extract_code_from_notebook(notebook_path)
 
-            # Zapisz kod do CSV
-            output_csv_path = os.path.join(output_dir, f"{notebook_title}.csv")
-            save_code_to_csv(code_cells, output_csv_path)
-            print(f"Zapisano kod do: {output_csv_path}")
+            all_codes.append({"code": code, "category": 'Chatbot'})
         else:
             print(f"Notebook {notebook_title} nie został znaleziony.")
+
+    # Zapisz wszystkie kody do jednego pliku CSV
+    save_code_to_csv(all_codes, output_csv_path)
+    print(f"Wszystkie kody zapisano do: {output_csv_path}")
 
 
 # Ścieżka do katalogu zawierającego plik kaggle.json
 base_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu"  # Zmień na rzeczywistą ścieżkę
 
 # Lista URL projektów Kaggle
-project_urls = [
-    "https://www.kaggle.com/code/odins0n/video-anomaly-detection",
-    "https://www.kaggle.com/code/victorambonati/unsupervised-anomaly-detection",
-    "https://www.kaggle.com/code/joshuaswords/time-series-anomaly-detection"
-]
+project_urls = get_urls()
+
+# Ścieżka wyjściowego pliku CSV
+output_csv_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu/all_codes.csv"  # Zmień na rzeczywistą ścieżkę
 
 # Uruchom proces
-process_kaggle_projects(project_urls, base_path)
+process_kaggle_projects(project_urls, base_path, output_csv_path)
