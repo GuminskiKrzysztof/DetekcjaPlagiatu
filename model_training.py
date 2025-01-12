@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 
-data = pd.read_csv("all_codes.csv")
+data = pd.read_csv("all_codes_c.csv")
 
 label_encoder = LabelEncoder()
 data["label"] = label_encoder.fit_transform(data["category"])
@@ -30,7 +30,7 @@ tokenized_datasets = dataset.map(tokenize_function, batched=True)
 
 # 7. Parametry treningu
 training_args = TrainingArguments(
-    output_dir="./results",  # Katalog na wyniki
+    output_dir="./results2",  # Katalog na wyniki
     evaluation_strategy="epoch",  # Ewaluacja po każdej epoce
     learning_rate=2e-5,
     per_device_train_batch_size=8,
@@ -56,5 +56,5 @@ trainer = Trainer(
 trainer.train()
 
 # 10. Zapisz model i tokenizer
-model.save_pretrained("./codebert_model")
-tokenizer.save_pretrained("./codebert_model")
+model.save_pretrained("./c_code_classification")
+tokenizer.save_pretrained("./c_code_classification")
