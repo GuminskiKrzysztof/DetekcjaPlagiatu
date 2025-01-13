@@ -35,17 +35,11 @@ def get_urls(url="https://www.kaggle.com/search?q=chatbot+in%3Anotebooks"):
 
 
 def setup_kaggle_credentials(base_path):
-    """
-    Przejdź do katalogu zawierającego plik kaggle.json i ustaw środowisko.
-    """
-    os.chdir(base_path)  # Zmień katalog roboczy
+    os.chdir(base_path)
     print(f"Aktualny katalog roboczy: {os.getcwd()}")
 
 
 def download_kaggle_notebook(author, notebook_title, save_path="./notebooks"):
-    """
-    Pobierz notebook z Kaggle i zapisz go do folderu.
-    """
     os.makedirs(save_path, exist_ok=True)
     command = f"kaggle kernels pull {author}/{notebook_title} -p {save_path}"
     os.system(command)
