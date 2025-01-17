@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # 1. Ścieżki do zapisanych modeli i danych
 MODEL_PATH = "trained_model"
-CSV_PATH = "all_codes.csv"
+CSV_PATH = "backend/data/all_python_codes.csv"
 
 # 2. Wczytaj tokenizer i model
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
@@ -19,7 +19,7 @@ label_encoder = LabelEncoder()
 label_encoder.fit(data["category"])
 
 MODEL_PATH2 = "c_code_classification"
-CSV_PATH2 = "all_codes_c.csv"
+CSV_PATH2 = "all_cpp_codes.csv"
 
 tokenizer2 = AutoTokenizer.from_pretrained(MODEL_PATH2)
 model2 = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH2)
@@ -68,7 +68,7 @@ def evaluate_text():
 def search_codes():
     data = request.get_json()
     category = data.get("category", "")
-    all_codes = pd.read_csv("all_codes.csv")
+    all_codes = pd.read_csv("backend/data/all_python_codes.csv")
     specfic_codes = all_codes[all_codes['category'] == category]
     codes_list = specfic_codes.to_dict(orient="records")
     return {"Codes: ": codes_list}
@@ -85,7 +85,7 @@ def evaluate_text_c():
 def search_codes_c():
     data = request.get_json()
     category = data.get("category", "")
-    all_codes = pd.read_csv("all_codes_c.csv")
+    all_codes = pd.read_csv("backend/data/all_cpp_codes.csv")
     specfic_codes = all_codes[all_codes['category'] == category]
     codes_list = specfic_codes.to_dict(orient="records")
     return {"Codes: ": codes_list}
