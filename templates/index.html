@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Strona główna{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+    <div class="top-left">Automatyczne wykrywanie plagiatów</div>
+    <div class="top-right">Intuicyjny proces analizy – szybkie i dokładne wyniki</div>
+    <div class="bottom-left">Wspieramy dwa języki programowania - Python i C++</div>
+    <div class="bottom-right">Integracja z GIT <br>i lokalnymi repozytoriami</div>
+
+    <div class="center-container">
+        <div class="rotating-circle">
+            <img src="{{ url_for('static', filename='img/circle_txt.png') }}" alt="Obracający się tekst" />
+        </div>
+        <div class="inner-icon">
+            <img src="{{ url_for('static', filename='img/search.png') }}" alt="Wewnętrzna grafika" />
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
