@@ -6,10 +6,58 @@ document.addEventListener("DOMContentLoaded", function() {
     const codeEditor = document.getElementById("code-editor");
 
     addFileButton.addEventListener("click", function() {
-        const newFile = document.createElement("p");
-        newFile.textContent = `plik${filesContainer.children.length + 1}.py`;
-        filesContainer.appendChild(newFile);
+        const fileElement = createFileElement(`plik${filesContainer.children.length + 1}.py`);
+        filesContainer.appendChild(fileElement);
     });
+
+    function createFileElement(fileName) {
+        const fileWrapper = document.createElement("div");
+        fileWrapper.classList.add("file-wrapper");
+
+        const fileNameElement = document.createElement("p");
+        fileNameElement.textContent = fileName;
+
+        const editIcon = document.createElement("span");
+        editIcon.innerHTML = "&#9998;";
+        editIcon.classList.add("icon", "edit-icon");
+        editIcon.addEventListener("click", () => enableFilenameEditing(fileNameElement));
+
+        const deleteIcon = document.createElement("span");
+        deleteIcon.innerHTML = "&#10006;";
+        deleteIcon.classList.add("icon", "delete-icon");
+        deleteIcon.addEventListener("click", () => fileWrapper.remove());
+
+        
+        fileWrapper.appendChild(fileNameElement);
+        fileWrapper.appendChild(editIcon);
+        fileWrapper.appendChild(deleteIcon);
+
+        return fileWrapper;
+    }
+
+    function enableFilenameEditing(fileNameElement) {
+        const currentName = fileNameElement.textContent;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentName;
+        input.classList.add("filename-edit-input");
+        
+        input.addEventListener("blur", function() {
+            fileNameElement.textContent = input.value || currentName;
+            fileNameElement.style.display = "block";
+            input.remove();
+        });
+
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                input.blur();
+            }
+        });
+
+        fileNameElement.style.display = "none";
+        fileNameElement.parentNode.insertBefore(input, fileNameElement);
+        input.focus();
+    }
 
     analyzeFileButton.addEventListener("click", async function() {
         const code = codeEditor.value.trim();
