@@ -1,3 +1,5 @@
+import { toggleVisibility } from "./utils.js";
+
 document.addEventListener("DOMContentLoaded", function() {
     const addFileButton = document.getElementById("add-file-button");
     const filesContainer = document.getElementById("files-container");
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const editIcon = document.createElement("span");
         editIcon.innerHTML = "&#9998;";
         editIcon.classList.add("icon", "edit-icon");
-        editIcon.addEventListener("click", () => enableFilenameEditing(fileWrapper, fileNameElement));
+        editIcon.addEventListener("click", () => enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon));
 
         const deleteIcon = document.createElement("span");
         deleteIcon.innerHTML = "&#10006;";
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return fileWrapper;
     }
 
-    function enableFilenameEditing(fileWrapper, fileNameElement) {
+    function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
         const currentName = fileNameElement.textContent;
         const lastDotIndex = currentName.lastIndexOf(".");
         const namePart = currentName.substring(0, lastDotIndex);
@@ -53,11 +55,17 @@ document.addEventListener("DOMContentLoaded", function() {
         extensionSpan.textContent = extensionPart;
         extensionSpan.classList.add("file-extension");
 
+        toggleVisibility(editIcon);
+        toggleVisibility(deleteIcon);
+
         input.addEventListener("blur", function() {
             const newName = input.value || namePart;
             fileNameElement.textContent = newName + extensionPart;
             fileNameElement.style.display = "block";
             inputWrapper.remove();
+
+            toggleVisibility(editIcon);
+            toggleVisibility(deleteIcon);
         });
 
         input.addEventListener("keydown", function(e) {

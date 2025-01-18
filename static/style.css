@@ -407,7 +407,6 @@ footer {
 .filename-edit-input {
     flex-grow: 1;
     padding: 5px;
-    font-size: 14px;
     background-color: transparent;
     color: white;
     border: 1px solid #ccc;
@@ -417,7 +416,6 @@ footer {
 
 .file-extension {
     padding: 5px;
-    font-size: 14px;
 }
 
 #main-editor {
