@@ -22,6 +22,20 @@ body {
     color: #fff;
 }
 
+input, button, select, textarea {
+    font-family: inherit;
+}
+
+::selection {
+    background: #aeff8c;
+    color: #000;
+}
+
+::-moz-selection{
+    background: #aeff8c;
+    color: #000;
+}
+
 /* Wrapper */
 #wrapper {
     flex: 1;
@@ -353,8 +367,13 @@ footer {
     align-items: center;
     justify-content: space-between;
     padding: 5px 10px;
+    border-radius: 4px;
     margin: 5px 0;
     position: relative;
+}
+
+.file-wrapper:hover {
+    background: #FFFFFF10;
 }
 
 .file-wrapper:hover .icon {
@@ -379,12 +398,26 @@ footer {
     opacity: 1;
 }
 
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 .filename-edit-input {
-    width: calc(100% - 20px);
+    flex-grow: 1;
     padding: 5px;
     font-size: 14px;
+    background-color: transparent;
+    color: white;
     border: 1px solid #ccc;
     border-radius: 4px;
+    outline: none;
+}
+
+.file-extension {
+    padding: 5px;
+    font-size: 14px;
 }
 
 #main-editor {

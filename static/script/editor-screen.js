@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const editIcon = document.createElement("span");
         editIcon.innerHTML = "&#9998;";
         editIcon.classList.add("icon", "edit-icon");
-        editIcon.addEventListener("click", () => enableFilenameEditing(fileNameElement));
+        editIcon.addEventListener("click", () => enableFilenameEditing(fileWrapper, fileNameElement));
 
         const deleteIcon = document.createElement("span");
         deleteIcon.innerHTML = "&#10006;";
@@ -35,17 +35,29 @@ document.addEventListener("DOMContentLoaded", function() {
         return fileWrapper;
     }
 
-    function enableFilenameEditing(fileNameElement) {
+    function enableFilenameEditing(fileWrapper, fileNameElement) {
         const currentName = fileNameElement.textContent;
+        const lastDotIndex = currentName.lastIndexOf(".");
+        const namePart = currentName.substring(0, lastDotIndex);
+        const extensionPart = currentName.substring(lastDotIndex);
+
+        const inputWrapper = document.createElement("div");
+        inputWrapper.classList.add("input-wrapper");
+        
         const input = document.createElement("input");
         input.type = "text";
-        input.value = currentName;
+        input.value = namePart;
         input.classList.add("filename-edit-input");
         
+        const extensionSpan = document.createElement("span");
+        extensionSpan.textContent = extensionPart;
+        extensionSpan.classList.add("file-extension");
+
         input.addEventListener("blur", function() {
-            fileNameElement.textContent = input.value || currentName;
+            const newName = input.value || namePart;
+            fileNameElement.textContent = newName + extensionPart;
             fileNameElement.style.display = "block";
-            input.remove();
+            inputWrapper.remove();
         });
 
         input.addEventListener("keydown", function(e) {
@@ -55,8 +67,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         fileNameElement.style.display = "none";
-        fileNameElement.parentNode.insertBefore(input, fileNameElement);
+        inputWrapper.appendChild(input);
+        inputWrapper.appendChild(extensionSpan);
+        fileWrapper.insertBefore(inputWrapper, fileNameElement);
         input.focus();
+
+        input.setSelectionRange(0, namePart.length);
     }
 
     analyzeFileButton.addEventListener("click", async function() {
