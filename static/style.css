@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
 
+/* Reset and base styles */
 * {
     margin: 0;
     padding: 0;
@@ -14,12 +15,6 @@ html, body {
     flex-direction: column;
 }
 
-#wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
 body {
     font-family: Consolas, sans-serif;
     background: linear-gradient(#050510, #19185d);
@@ -27,6 +22,14 @@ body {
     color: #fff;
 }
 
+/* Wrapper */
+#wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
 header {
     position: fixed;
     top: 0;
@@ -98,12 +101,14 @@ header {
     background: linear-gradient(to bottom, #050510, #05051000);
 }
 
+/* Main content */
 main {
     margin-top: 120px;
     flex: 1;
     padding: 20px;
 }
 
+/* Footer */
 footer {
     background: #19185d05;
     color: white;
@@ -112,6 +117,7 @@ footer {
     margin-top: 20px;
 }
 
+/* Grid container */
 .grid-container {
     position: relative;
     width: 100%;
@@ -151,6 +157,7 @@ footer {
     text-align: right;
 }
 
+/* Rotating circle */
 .center-container {
     position: relative;
     width: 300px;
@@ -196,6 +203,7 @@ footer {
     }
 }
 
+/* How it works section */
 .how-it-works {
     display: flex;
     flex-direction: column;
@@ -254,6 +262,7 @@ footer {
     }
 }
 
+/* Center main */
 .center-main {
     display: flex;
     justify-content: center;
@@ -263,7 +272,7 @@ footer {
     flex-direction: column;
 }
 
-/* Ekran startowy */
+/* Add project screen */
 #add-project-screen {
     display: flex;
     justify-content: center;
@@ -289,7 +298,7 @@ footer {
     background-color: #91e076;
 }
 
-/* Układ edytora */
+/* Editor screen */
 #editor-screen {
     display: flex;
     height: 100%;

@@ -33,7 +33,7 @@ def o_nas():
     return render_template('about-us.html', active_page='about-us')
 
 # Obsługa API dla kodów Python
-@app.route('/predict_category', methods=['POST']) # zmienić nazwę predict_category_python
+@app.route('/predict_category_python', methods=['POST'])
 def predict_category_python():
     data = request.get_json()
     code = data.get("code", "")
@@ -50,7 +50,7 @@ def search_codes_python():
     return jsonify({"Codes": pd.read_csv("backend/data/all_python_codes.csv")})
 
 # Obsługa API dla kodów C++
-# @app.route('/predict_category_c', methods=['POST']) # zmienić nazwę predict_category_cpp
+# @app.route('/predict_category_cpp', methods=['POST'])
 # def predict_category_cpp():
 #     data = request.get_json()
 #     code = data.get("code", "")
