@@ -15,6 +15,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
+# Obsługa frontendowych stron HTML
 @app.route('/')
 def home():
     return render_template('index.html', active_page='home')
