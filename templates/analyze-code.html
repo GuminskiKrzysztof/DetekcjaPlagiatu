@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="center-main">
-    <div id="start-screen">
+    <div id="add-project-screen">
         <h2>Dodaj swój projekt</h2>
         <div>
             <button id="create-button">Stwórz</button>
@@ -13,10 +13,10 @@
         </div>
     </div>
 
-    <div id="editor-screen" class="hidden">
+    <div id="editor-screen" style="display: none;">
         <div id="left-panel">
-            <button id="add-file">+</button>
-            <div class="files">
+            <button id="add-file-button">+</button>
+            <div id="files-container" class="files">
                 <p>plik1.py</p>
                 <p>plik2.py</p>
             </div>
@@ -33,18 +33,6 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const startScreen = document.getElementById("start-screen");
-        const editorScreen = document.getElementById("editor-screen");
-        const createButton = document.getElementById("create-button");
-    
-        createButton.addEventListener("click", function () {
-            startScreen.classList.add("hidden");
-            editorScreen.classList.remove("hidden");
-        });
-    });
-    </script>
-    
-
+<script src="{{ url_for('static', filename='script/add-project-screen.js') }}" type="module"></script>
+<script src="{{ url_for('static', filename='script/editor-screen.js') }}" type="module"></script>
 {% endblock %}

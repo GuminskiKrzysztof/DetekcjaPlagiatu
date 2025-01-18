@@ -264,7 +264,7 @@ footer {
 }
 
 /* Ekran startowy */
-#start-screen {
+#add-project-screen {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -273,7 +273,7 @@ footer {
     background: #00000050;
 }
 
-#start-screen button {
+#add-project-screen button {
     font-size: 24px;
     padding: 15px 30px;
     background-color: #aeff8c;
@@ -285,7 +285,7 @@ footer {
     transition: background-color 0.3s;
 }
 
-#start-screen button:hover {
+#add-project-screen button:hover {
     background-color: #91e076;
 }
 
@@ -295,14 +295,6 @@ footer {
     height: 100%;
     width: 90%;
     background-color: #050510;
-}
-
-#start-screen.hidden {
-    display: none;
-}
-
-#editor-screen.hidden {
-    display: none;
 }
 
 #left-panel, #right-panel {
@@ -344,7 +336,7 @@ footer {
     background: #333;
 }
 
-#add-file {
+#add-file-button {
     background: #aeff8c;
     color: #050510;
     font-size: 18px;
@@ -356,7 +348,7 @@ footer {
     transition: background-color 0.3s;
 }
 
-#add-file:hover {
+#add-file-button:hover {
     background: #91e076;
 }
 
