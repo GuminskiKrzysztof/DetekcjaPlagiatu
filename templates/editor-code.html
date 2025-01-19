@@ -3,21 +3,24 @@
 {% block title %}Edytuj kod{% endblock %}
 
 {% block content %}
-<div id="editor-screen">
-    <div id="left-panel">
-        <button id="add-file-button">+</button>
-        <div id="files-container" class="files">
+<div class="center-main">
+    <div id="editor-screen">
+        <div id="left-panel">
+            <button id="add-file-button">+</button>
+            <div id="files-container" class="files">
+            </div>
+        </div>
+
+        <div id="main-editor">
+            <textarea id="code-editor" placeholder="Wpisz kod"></textarea>
+        </div>
+
+        <div id="rigght-panel">
+            <button id="analyze-file-button" class="analyze-button">Analizuj plik</button>
+            <button id="analyze-project-button" class="analyze-button">Analizuj wszystko</button>
         </div>
     </div>
-
-    <div id="main-editor">
-        <textarea id="code-editor" placeholder="Wpisz kod"></textarea>
-    </div>
-
-    <div id="right-panel">
-        <button id="analyze-file-button" class="analyze-button">Analizuj plik</button>
-        <button id="analyze-project-button" class="analyze-button">Analizuj wszystko</button>
-    </div>
 </div>
+
 <script src="{{ url_for('static', filename='script/editor-screen.js') }}" type="module"></script>
 {% endblock %}
