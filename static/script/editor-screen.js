@@ -15,7 +15,10 @@ document.addEventListener("DOMContentLoaded", function() {
         return 'file-' + (fileIdCounter++);
     }
 
+    // Modify the stored files handling
     const storedFiles = JSON.parse(localStorage.getItem("selectedFiles") || "[]");
+    localStorage.removeItem("selectedFiles"); // Clear immediately after reading
+    
     storedFiles.forEach(fileObj => {
         const fileId = fileObj.id || generateFileId(); // Używamy istniejącego ID lub generujemy nowy
         fileCodes.set(fileId, fileObj.content);

@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let files = [];
 
     createButton.addEventListener("click", function() {
-        toggleVisibility(addProjectScreen);
-        toggleVisibility(editorScreen);
+        window.location.href = "/edytor-kod";
     });
 
     selectFileButton.addEventListener("click", function() {
@@ -66,8 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
     nextButton.addEventListener("click", function() {
         if (files.length > 0) {
             localStorage.setItem("selectedFiles", JSON.stringify(files));
-            toggleVisibility(addProjectScreen);
-            toggleVisibility(editorScreen);
+            window.location.href = "/edytor-kod";
         }
     });
 

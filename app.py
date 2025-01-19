@@ -24,13 +24,17 @@ def home():
 def jak_to_dziala():
     return render_template('how-it-works.html', active_page='how-it-works')
 
+@app.route('/o-nas')
+def o_nas():
+    return render_template('about-us.html', active_page='about-us')
+
 @app.route('/analizuj-kod')
 def analizuj_kod():
     return render_template('analyze-code.html', active_page='analyze-code')
 
-@app.route('/o-nas')
-def o_nas():
-    return render_template('about-us.html', active_page='about-us')
+@app.route('/edytor-kod')
+def edytor_kod():
+    return render_template('editor-code.html', active_page='analyze-code')
 
 # Obsługa API dla kodów Python
 @app.route('/predict_category_python', methods=['POST'])
