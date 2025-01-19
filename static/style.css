@@ -418,6 +418,22 @@ footer {
     outline: none;
 }
 
+.filename-edit-input.error {
+    border-color: #fb6a66;
+}
+
+.filename-error {
+    color: #fb6a66;
+    background-color: #111;
+    font-size: 12.5px;
+    padding: 6px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
 .file-extension {
     padding: 5px;
 }

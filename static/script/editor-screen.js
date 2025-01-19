@@ -128,14 +128,27 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleVisibility(editIcon);
         toggleVisibility(deleteIcon);
 
-        input.addEventListener("blur", function() {
+        function handleNameChange() {
             const newNamePart = input.value.trim() || namePart;
             const newName = newNamePart + extensionPart;
 
-            if (newName !== currentName && fileCodes.has(newName)) {
-                alert("Plik o tej nazwie już istnieje.");
+            // Check for duplicate filename
+            const files = filesContainer.querySelectorAll('.file-wrapper');
+            const isDuplicate = Array.from(files).some(file => 
+                file !== fileWrapper && file.dataset.fileName === newName
+            );
+
+            if (isDuplicate) {
+                input.classList.add('error');
+                let errorMsg = inputWrapper.querySelector('.filename-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.classList.add('filename-error');
+                    errorMsg.textContent = 'Plik o tej nazwie już istnieje.';
+                    inputWrapper.appendChild(errorMsg);
+                }
                 input.focus();
-                return;
+                return false;
             }
 
             fileWrapper.dataset.fileName = newName;
@@ -150,11 +163,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
             toggleVisibility(editIcon);
             toggleVisibility(deleteIcon);
-        });
+            return true;
+        }
+
+        input.addEventListener("blur", handleNameChange);
 
         input.addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
-                input.blur();
+                e.preventDefault();
+                if (handleNameChange()) {
+                    input.blur();
+                }
+            }
+        });
+
+        input.addEventListener("input", function() {
+            input.classList.remove('error');
+            const errorMsg = inputWrapper.querySelector('.filename-error');
+            if (errorMsg) {
+                errorMsg.remove();
             }
         });
 
