@@ -9,17 +9,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const fileCodes = new Map();
     let activeFileName = null;
+    let fileIdCounter = 0;
+
+    function generateFileId() {
+        return 'file-' + (fileIdCounter++);
+    }
 
     addFileButton.addEventListener("click", function() {
+        const fileId = generateFileId();
         const baseName = `plik${filesContainer.children.length + 1}`;
         const extension = ".py";
         const newFileName = generateUniqueFileName(baseName + extension);
 
-        fileCodes.set(newFileName, "");
-        const fileElement = createFileElement(newFileName);
+        fileCodes.set(fileId, "");
+        const fileElement = createFileElement(fileId, newFileName);
         filesContainer.appendChild(fileElement);
 
-        setActiveFile(newFileName);
+        setActiveFile(fileId);
     });
 
     function generateUniqueFileName(fileName) {
@@ -36,16 +42,17 @@ document.addEventListener("DOMContentLoaded", function() {
         return uniqueName;
     }
 
-    function createFileElement(fileName) {
+    function createFileElement(fileId, fileName) {
         const fileWrapper = document.createElement("div");
         fileWrapper.classList.add("file-wrapper");
+        fileWrapper.dataset.fileId = fileId;
         fileWrapper.dataset.fileName = fileName;
 
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
 
         fileNameElement.addEventListener("click", () => {
-            setActiveFile(fileWrapper.dataset.fileName);
+            setActiveFile(fileWrapper.dataset.fileId);
         });
 
         const editIcon = document.createElement("span");
@@ -59,9 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
         deleteIcon.innerHTML = "&#10006;";
         deleteIcon.classList.add("icon", "delete-icon");
         deleteIcon.addEventListener("click", () => {
-            fileCodes.delete(fileName);
+            fileCodes.delete(fileId);
             fileWrapper.remove();
-            if (activeFileName === fileName) {
+            if (activeFileName === fileId) {
                 clearEditor();
             }
         });
@@ -74,16 +81,15 @@ document.addEventListener("DOMContentLoaded", function() {
         return fileWrapper;
     }
 
-    function setActiveFile(fileName) {
-        activeFileName = fileName;
-
-        const code = fileCodes.get(fileName);
+    function setActiveFile(fileId) {
+        activeFileName = fileId;
+        const code = fileCodes.get(fileId);
         codeEditor.value = code;
 
         const fileWrappers = filesContainer.querySelectorAll(".file-wrapper");
         fileWrappers.forEach((wrapper) => wrapper.classList.remove("active"));
         const activeWrapper = filesContainer.querySelector(
-            `[data-file-name="${fileName}"]`
+            `[data-file-id="${fileId}"]`
         );
         if (activeWrapper) {
             activeWrapper.classList.add("active");
@@ -132,8 +138,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            fileCodes.set(newName, fileCodes.get(currentName));
-            fileCodes.delete(currentName);
             fileWrapper.dataset.fileName = newName;
             fileNameElement.textContent = newName;
 
