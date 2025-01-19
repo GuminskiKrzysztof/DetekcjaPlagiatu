@@ -15,6 +15,19 @@ document.addEventListener("DOMContentLoaded", function() {
         return 'file-' + (fileIdCounter++);
     }
 
+    const storedFiles = JSON.parse(localStorage.getItem("selectedFiles") || "[]");
+    storedFiles.forEach(fileObj => {
+        const fileId = fileObj.id || generateFileId(); // Używamy istniejącego ID lub generujemy nowy
+        fileCodes.set(fileId, fileObj.content);
+        const fileElement = createFileElement(fileId, fileObj.name);
+        filesContainer.appendChild(fileElement);
+
+        // Automatycznie wybierz pierwszy plik
+        if (filesContainer.children.length === 1) {
+            setActiveFile(fileId);
+        }
+    });
+
     addFileButton.addEventListener("click", function() {
         const fileId = generateFileId();
         const baseName = `plik${filesContainer.children.length + 1}`;
@@ -84,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function setActiveFile(fileId) {
         activeFileName = fileId;
         const code = fileCodes.get(fileId);
-        codeEditor.value = code;
+        codeEditor.value = code || '';
 
         const fileWrappers = filesContainer.querySelectorAll(".file-wrapper");
         fileWrappers.forEach((wrapper) => wrapper.classList.remove("active"));
