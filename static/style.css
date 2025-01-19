@@ -171,6 +171,41 @@ footer {
     text-align: right;
 }
 
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-8%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-right {
+    0% {
+        transform: translateX(8%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Klasy animacji */
+.animate-left {
+    animation: slide-in-left 1s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+.animate-right {
+    animation: slide-in-right 1s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
 /* Rotating circle */
 .center-container {
     position: relative;
