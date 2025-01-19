@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
 
-        fileNameElement.addEventListener("click", function() {
-            setActiveFile(fileName);
+        fileNameElement.addEventListener("click", () => {
+            setActiveFile(fileWrapper.dataset.fileName);
         });
 
         const editIcon = document.createElement("span");
