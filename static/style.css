@@ -398,6 +398,10 @@ footer {
     opacity: 1;
 }
 
+.file-wrapper.active {
+    background: #ffffff20;
+}
+
 .input-wrapper {
     display: flex;
     align-items: center;

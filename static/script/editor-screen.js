@@ -3,31 +3,68 @@ import { toggleVisibility } from "./utils.js";
 document.addEventListener("DOMContentLoaded", function() {
     const addFileButton = document.getElementById("add-file-button");
     const filesContainer = document.getElementById("files-container");
+    const codeEditor = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
-    const codeEditor = document.getElementById("code-editor");
+
+    const fileCodes = new Map();
+    let activeFileName = null;
 
     addFileButton.addEventListener("click", function() {
-        const fileElement = createFileElement(`plik${filesContainer.children.length + 1}.py`);
+        const baseName = `plik${filesContainer.children.length + 1}`;
+        const extension = ".py";
+        const newFileName = generateUniqueFileName(baseName + extension);
+
+        fileCodes.set(newFileName, "");
+        const fileElement = createFileElement(newFileName);
         filesContainer.appendChild(fileElement);
+
+        setActiveFile(newFileName);
     });
+
+    function generateUniqueFileName(fileName) {
+        let uniqueName = fileName;
+        let counter = 1;
+        while (fileCodes.has(uniqueName)) {
+            const lastDotIndex = fileName.lastIndexOf(".");
+            const namePart = fileName.substring(0, lastDotIndex);
+            const extension = fileName.substring(lastDotIndex);
+            uniqueName = `${namePart}_${counter}${extension}`;
+            counter++;
+        }
+
+        return uniqueName;
+    }
 
     function createFileElement(fileName) {
         const fileWrapper = document.createElement("div");
         fileWrapper.classList.add("file-wrapper");
+        fileWrapper.dataset.fileName = fileName;
 
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
 
+        fileNameElement.addEventListener("click", function() {
+            setActiveFile(fileName);
+        });
+
         const editIcon = document.createElement("span");
         editIcon.innerHTML = "&#9998;";
         editIcon.classList.add("icon", "edit-icon");
-        editIcon.addEventListener("click", () => enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon));
+        editIcon.addEventListener("click", () =>    
+            enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon)
+        );
 
         const deleteIcon = document.createElement("span");
         deleteIcon.innerHTML = "&#10006;";
         deleteIcon.classList.add("icon", "delete-icon");
-        deleteIcon.addEventListener("click", () => fileWrapper.remove());
+        deleteIcon.addEventListener("click", () => {
+            fileCodes.delete(fileName);
+            fileWrapper.remove();
+            if (activeFileName === fileName) {
+                clearEditor();
+            }
+        });
 
         
         fileWrapper.appendChild(fileNameElement);
@@ -36,6 +73,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
         return fileWrapper;
     }
+
+    function setActiveFile(fileName) {
+        activeFileName = fileName;
+
+        const code = fileCodes.get(fileName);
+        codeEditor.value = code;
+
+        const fileWrappers = filesContainer.querySelectorAll(".file-wrapper");
+        fileWrappers.forEach((wrapper) => wrapper.classList.remove("active"));
+        const activeWrapper = filesContainer.querySelector(
+            `[data-file-name="${fileName}"]`
+        );
+        if (activeWrapper) {
+            activeWrapper.classList.add("active");
+        }
+    }
+
+    function clearEditor() {
+        activeFileName = null;
+        codeEditor.value = "";
+    }
+
+    codeEditor.addEventListener("input", function() {
+        if (activeFileName) {
+            fileCodes.set(activeFileName, codeEditor.value);
+        }
+    });
 
     function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
         const currentName = fileNameElement.textContent;
@@ -59,8 +123,24 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleVisibility(deleteIcon);
 
         input.addEventListener("blur", function() {
-            const newName = input.value || namePart;
-            fileNameElement.textContent = newName + extensionPart;
+            const newNamePart = input.value.trim() || namePart;
+            const newName = newNamePart + extensionPart;
+
+            if (newName !== currentName && fileCodes.has(newName)) {
+                alert("Plik o tej nazwie już istnieje.");
+                input.focus();
+                return;
+            }
+
+            fileCodes.set(newName, fileCodes.get(currentName));
+            fileCodes.delete(currentName);
+            fileWrapper.dataset.fileName = newName;
+            fileNameElement.textContent = newName;
+
+            if (activeFileName === currentName) {
+                activeFileName = newName;
+            }
+
             fileNameElement.style.display = "block";
             inputWrapper.remove();
 
