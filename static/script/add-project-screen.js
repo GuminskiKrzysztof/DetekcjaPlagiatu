@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const editorScreen = document.getElementById("editor-screen");
     const createButton = document.getElementById("create-button");
     const selectFileButton = document.getElementById("select-file-button");
+    const fileInput = document.getElementById("file-input");
     const nextButton = document.getElementById("next-button");
 
     createButton.addEventListener("click", function() {
@@ -13,7 +14,22 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     selectFileButton.addEventListener("click", function() {
-        alert("Funkcja wyboru pliku nie jest jeszcze dostępna.");
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const validExtensions = ["cpp", "py"];
+            const fileExtension = file.name.split(".").pop().toLowerCase();
+
+            if (validExtensions.includes(fileExtension)) {
+                alert(`Wybrano plik: ${file.name}`);
+            } else {
+                alert("Nieobsługiwany format pliku. Wybierz plik .cpp lub .py.");
+                fileInput.value = "";
+            }
+        }
     });
 
     nextButton.addEventListener("click", function() {
