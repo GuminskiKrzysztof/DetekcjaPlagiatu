@@ -514,12 +514,29 @@ footer {
     background: #91e076;
 }
 
-
-
 #file-stats {
     font-size: 14px;
     padding: 8px;
     background: #00000030;
     border-radius: 4px;
     margin-bottom: 10px;
+}
+
+#drop-zone {
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+#drop-zone.drag-over {
+    border-color: #aeff8c;
+    background: #aeff8c20;
+}
+
+#drop-zone p {
+    margin-bottom: 15px;
+    color: #ffffff80;
 }

@@ -18,6 +18,7 @@ Promise.all([
     const fileInput = document.getElementById("file-input");
     const nextButton = document.getElementById("next-button");
     const fileListDiv = document.getElementById("file-list");
+    const dropZone = document.getElementById("drop-zone");
 
     let files = [];
     let zipFiles = [];
@@ -200,6 +201,27 @@ Promise.all([
                 alert("Błąd podczas zapisywania plików. Spróbuj z mniejszą liczbą plików.");
             }
         }
+    });
+
+    // Add drag & drop event listeners
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        droppedFiles.forEach(file => {
+            handleFile(file);
+        });
     });
 
 });

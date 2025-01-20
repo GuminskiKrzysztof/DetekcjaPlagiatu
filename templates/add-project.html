@@ -7,10 +7,12 @@
     <div id="add-project-screen">
         <h2>Dodaj swój projekt</h2>
         <div>
-            <!-- Usunięto div#file-stats stąd, bo teraz jest tworzony przez JS -->
+            <div id="drop-zone">
+                <p>Przeciągnij i upuść pliki tutaj lub</p>
+                <button id="select-file-button">Wybierz z urządzenia</button>
+            </div>
             <div id="file-list"></div>
             <button id="create-button">Stwórz</button>
-            <button id="select-file-button">Wybierz z urządzenia</button>
             <input id="file-input" type="file" accept=".cpp,.py,.zip" style="display: none;">
             <button id="next-button">Dalej</button>
         </div>
