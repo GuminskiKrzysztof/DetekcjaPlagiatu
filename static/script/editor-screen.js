@@ -1,11 +1,39 @@
 import { toggleVisibility } from "./utils.js";
 
-document.addEventListener("DOMContentLoaded", function() {
+const DB_NAME = 'fileStorage';
+const STORE_NAME = 'files';
+
+async function getStoredFiles() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        
+        request.onerror = () => reject(request.error);
+        
+        request.onsuccess = () => {
+            const db = request.result;
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            const getRequest = store.get('selectedFiles');
+            
+            getRequest.onsuccess = () => {
+                // Clear the data after reading
+                store.delete('selectedFiles');
+                resolve(getRequest.result || {});
+            };
+            
+            getRequest.onerror = () => reject(getRequest.error);
+        };
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
     const addFileButton = document.getElementById("add-file-button");
     const filesContainer = document.getElementById("files-container");
     const codeEditor = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
+    const loadingStatus = document.getElementById("loading-status");
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -15,21 +43,23 @@ document.addEventListener("DOMContentLoaded", function() {
         return 'file-' + (fileIdCounter++);
     }
 
-    // Modify the stored files handling
-    const storedFiles = JSON.parse(localStorage.getItem("selectedFiles") || "[]");
-    localStorage.removeItem("selectedFiles"); // Clear immediately after reading
-    
-    storedFiles.forEach(fileObj => {
-        const fileId = fileObj.id || generateFileId(); // Używamy istniejącego ID lub generujemy nowy
-        fileCodes.set(fileId, fileObj.content);
-        const fileElement = createFileElement(fileId, fileObj.name);
-        filesContainer.appendChild(fileElement);
+    async function handleStoredFiles() {
+        const storedFiles = JSON.parse(localStorage.getItem("selectedFiles") || "[]");
+        localStorage.removeItem("selectedFiles");
 
-        // Automatycznie wybierz pierwszy plik
-        if (filesContainer.children.length === 1) {
-            setActiveFile(fileId);
-        }
-    });
+        storedFiles.forEach(fileObj => {
+            const fileId = fileObj.id || generateFileId();
+            fileCodes.set(fileId, fileObj.content);
+            const fileElement = createFileElement(fileId, fileObj.name);
+            filesContainer.appendChild(fileElement);
+
+            if (filesContainer.children.length === 1) {
+                setActiveFile(fileId);
+            }
+        });
+    }
+
+    await handleStoredFiles();
 
     addFileButton.addEventListener("click", function() {
         const fileId = generateFileId();

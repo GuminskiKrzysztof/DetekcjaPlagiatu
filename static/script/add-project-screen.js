@@ -30,31 +30,12 @@ Promise.all([
     async function handleZipFile(zipFile) {
         try {
             const zip = await JSZip.loadAsync(zipFile);
-            zipFiles.push(zipFile);
             
             const zipNameDiv = document.createElement("div");
             zipNameDiv.textContent = zipFile.name;
             zipNameDiv.classList.add("file-name", "zip-file");
-            
-            const removeButton = document.createElement("span");
-            removeButton.innerHTML = "&#10006;";
-            removeButton.classList.add("remove-file");
-            removeButton.onclick = () => {
-                zipFiles = zipFiles.filter(f => f !== zipFile);
-                zipNameDiv.remove();
-            };
-            
-            zipNameDiv.appendChild(removeButton);
-            fileListDiv.appendChild(zipNameDiv);
-        } catch (error) {
-            alert("Błąd podczas przetwarzania pliku ZIP.");
-            console.error(error);
-        }
-    }
 
-    async function extractZipFiles() {
-        for (const zipFile of zipFiles) {
-            const zip = await JSZip.loadAsync(zipFile);
+            // Extract files immediately
             for (const filename in zip.files) {
                 const file = zip.files[filename];
                 if (!file.dir) {
@@ -70,8 +51,22 @@ Promise.all([
                     }
                 }
             }
+            
+            const removeButton = document.createElement("span");
+            removeButton.innerHTML = "&#10006;";
+            removeButton.classList.add("remove-file");
+            removeButton.onclick = () => {
+                // Remove all files that came from this zip
+                files = files.filter(f => !f.id.includes(zipFile.name));
+                zipNameDiv.remove();
+            };
+            
+            zipNameDiv.appendChild(removeButton);
+            fileListDiv.appendChild(zipNameDiv);
+        } catch (error) {
+            alert("Błąd podczas przetwarzania pliku ZIP.");
+            console.error(error);
         }
-        return files;
     }
 
     function handleFile(file) {
@@ -119,14 +114,14 @@ Promise.all([
     });
 
     nextButton.addEventListener("click", async function() {
-        if (files.length > 0 || zipFiles.length > 0) {
-            if (zipFiles.length > 0) {
-                const extractedFiles = await extractZipFiles();
-                localStorage.setItem("selectedFiles", JSON.stringify(extractedFiles));
-            } else {
+        if (files.length > 0) {
+            try {
                 localStorage.setItem("selectedFiles", JSON.stringify(files));
+                window.location.href = "/edytor";
+            } catch (error) {
+                console.error("Error storing files:", error);
+                alert("Błąd podczas zapisywania plików. Spróbuj z mniejszą liczbą plików.");
             }
-            window.location.href = "/edytor";
         }
     });
 
