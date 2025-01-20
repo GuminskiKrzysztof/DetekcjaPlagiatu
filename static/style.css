@@ -324,11 +324,21 @@ footer {
 /* Add project screen */
 #add-project-screen {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 80vw;
     background: #00000050;
+    padding: 20px;
+}
+
+#add-project-screen > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
 }
 
 #add-project-screen button {
@@ -520,6 +530,33 @@ footer {
     background: #00000030;
     border-radius: 4px;
     margin-bottom: 10px;
+}
+
+#drop-zone {
+    min-height: 200px;
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+#drop-zone.drag-over {
+    border-color: #aeff8c;
+    background: #aeff8c20;
+}
+
+#drop-zone p {
+    text-align: center;
+    color: #ffffff80;
+    margin-bottom: 15px;
+}
+
+#file-list {
+    flex-grow: 1;
+    min-height: 50px;
 }
 
 #drop-zone {
