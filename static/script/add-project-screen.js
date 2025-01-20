@@ -1,6 +1,13 @@
 import { toggleVisibility } from "./utils.js";
 
-document.addEventListener("DOMContentLoaded", function() {
+// Wait for both DOM and JSZip to be ready
+Promise.all([
+    new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve)),
+    new Promise(resolve => {
+        if (window.JSZip) resolve();
+        else window.addEventListener('load', resolve);
+    })
+]).then(() => {
     const addProjectScreen = document.getElementById("add-project-screen");
     const editorScreen = document.getElementById("editor-screen");
     const createButton = document.getElementById("create-button");
@@ -10,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileListDiv = document.getElementById("file-list");
 
     let files = [];
+    let zipFiles = [];
 
     createButton.addEventListener("click", function() {
         window.location.href = "/edytor";
@@ -19,10 +27,58 @@ document.addEventListener("DOMContentLoaded", function() {
         fileInput.click();
     });
 
+    async function handleZipFile(zipFile) {
+        try {
+            const zip = await JSZip.loadAsync(zipFile);
+            zipFiles.push(zipFile);
+            
+            const zipNameDiv = document.createElement("div");
+            zipNameDiv.textContent = zipFile.name;
+            zipNameDiv.classList.add("file-name", "zip-file");
+            
+            const removeButton = document.createElement("span");
+            removeButton.innerHTML = "&#10006;";
+            removeButton.classList.add("remove-file");
+            removeButton.onclick = () => {
+                zipFiles = zipFiles.filter(f => f !== zipFile);
+                zipNameDiv.remove();
+            };
+            
+            zipNameDiv.appendChild(removeButton);
+            fileListDiv.appendChild(zipNameDiv);
+        } catch (error) {
+            alert("Błąd podczas przetwarzania pliku ZIP.");
+            console.error(error);
+        }
+    }
+
+    async function extractZipFiles() {
+        for (const zipFile of zipFiles) {
+            const zip = await JSZip.loadAsync(zipFile);
+            for (const filename in zip.files) {
+                const file = zip.files[filename];
+                if (!file.dir) {
+                    const extension = filename.split('.').pop().toLowerCase();
+                    if (['cpp', 'py'].includes(extension)) {
+                        const content = await file.async('text');
+                        const fileObject = {
+                            id: `file-${Date.now()}-${filename}`,
+                            name: filename,
+                            content: content
+                        };
+                        files.push(fileObject);
+                    }
+                }
+            }
+        }
+        return files;
+    }
+
     function handleFile(file) {
-        const validExtensions = ["cpp", "py"];
         const fileExtension = file.name.split(".").pop().toLowerCase();
-        if (validExtensions.includes(fileExtension)) {
+        if (fileExtension === 'zip') {
+            handleZipFile(file);
+        } else if (['cpp', 'py'].includes(fileExtension)) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const fileObject = {
@@ -50,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
             };
             reader.readAsText(file);
         } else {
-            alert("Nieobsługiwany format pliku. Wybierz plik .cpp lub .py.");
+            alert("Nieobsługiwany format pliku. Wybierz plik .cpp, .py lub .zip");
             fileInput.value = "";
         }
     }
@@ -62,9 +118,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    nextButton.addEventListener("click", function() {
-        if (files.length > 0) {
-            localStorage.setItem("selectedFiles", JSON.stringify(files));
+    nextButton.addEventListener("click", async function() {
+        if (files.length > 0 || zipFiles.length > 0) {
+            if (zipFiles.length > 0) {
+                const extractedFiles = await extractZipFiles();
+                localStorage.setItem("selectedFiles", JSON.stringify(extractedFiles));
+            } else {
+                localStorage.setItem("selectedFiles", JSON.stringify(files));
+            }
             window.location.href = "/edytor";
         }
     });
