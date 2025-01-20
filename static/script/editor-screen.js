@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     const codeEditor = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
-    const loadingStatus = document.getElementById("loading-status");
 
     const fileCodes = new Map();
     let activeFileName = null;

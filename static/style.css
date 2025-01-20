@@ -514,23 +514,12 @@ footer {
     background: #91e076;
 }
 
-/* Loading spinner */
-#loading-status {
-    text-align: center;
-    margin: 10px 0;
-}
 
-.loading-spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 10px auto;
-}
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+#file-stats {
+    font-size: 14px;
+    padding: 8px;
+    background: #00000030;
+    border-radius: 4px;
+    margin-bottom: 10px;
 }
