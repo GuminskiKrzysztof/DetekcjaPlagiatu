@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
 
+/* Reset and base styles */
 * {
     margin: 0;
     padding: 0;
@@ -14,12 +15,6 @@ html, body {
     flex-direction: column;
 }
 
-#wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
 body {
     font-family: Consolas, sans-serif;
     background: linear-gradient(#050510, #19185d);
@@ -27,6 +22,28 @@ body {
     color: #fff;
 }
 
+input, button, select, textarea {
+    font-family: inherit;
+}
+
+::selection {
+    background: #aeff8c;
+    color: #000;
+}
+
+::-moz-selection{
+    background: #aeff8c;
+    color: #000;
+}
+
+/* Wrapper */
+#wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
 header {
     position: fixed;
     top: 0;
@@ -98,12 +115,14 @@ header {
     background: linear-gradient(to bottom, #050510, #05051000);
 }
 
+/* Main content */
 main {
     margin-top: 120px;
     flex: 1;
     padding: 20px;
 }
 
+/* Footer */
 footer {
     background: #19185d05;
     color: white;
@@ -112,6 +131,7 @@ footer {
     margin-top: 20px;
 }
 
+/* Grid container */
 .grid-container {
     position: relative;
     width: 100%;
@@ -151,6 +171,42 @@ footer {
     text-align: right;
 }
 
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-8%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-right {
+    0% {
+        transform: translateX(8%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Klasy animacji */
+.animate-left {
+    animation: slide-in-left 1s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+.animate-right {
+    animation: slide-in-right 1s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+/* Rotating circle */
 .center-container {
     position: relative;
     width: 300px;
@@ -196,6 +252,7 @@ footer {
     }
 }
 
+/* How it works section */
 .how-it-works {
     display: flex;
     flex-direction: column;
@@ -254,6 +311,7 @@ footer {
     }
 }
 
+/* Center main */
 .center-main {
     display: flex;
     justify-content: center;
@@ -263,17 +321,27 @@ footer {
     flex-direction: column;
 }
 
-/* Ekran startowy */
-#start-screen {
+/* Add project screen */
+#add-project-screen {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 80vw;
     background: #00000050;
+    padding: 20px;
 }
 
-#start-screen button {
+#add-project-screen > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+}
+
+#add-project-screen button {
     font-size: 24px;
     padding: 15px 30px;
     background-color: #aeff8c;
@@ -285,24 +353,16 @@ footer {
     transition: background-color 0.3s;
 }
 
-#start-screen button:hover {
+#add-project-screen button:hover {
     background-color: #91e076;
 }
 
-/* Układ edytora */
+/* Editor screen */
 #editor-screen {
     display: flex;
     height: 100%;
     width: 90%;
     background-color: #050510;
-}
-
-#start-screen.hidden {
-    display: none;
-}
-
-#editor-screen.hidden {
-    display: none;
 }
 
 #left-panel, #right-panel {
@@ -331,20 +391,7 @@ footer {
     margin-top: 20px;
 }
 
-.files p {
-    padding: 10px;
-    background: #222;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.files p:hover {
-    background: #333;
-}
-
-#add-file {
+#add-file-button {
     background: #aeff8c;
     color: #050510;
     font-size: 18px;
@@ -356,8 +403,84 @@ footer {
     transition: background-color 0.3s;
 }
 
-#add-file:hover {
+#add-file-button:hover {
     background: #91e076;
+}
+
+.file-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    position: relative;
+}
+
+.file-wrapper:hover {
+    background: #FFFFFF10;
+}
+
+.file-wrapper:hover .icon {
+    opacity: 0.45;
+}
+
+.file-wrapper p {
+    margin: 0;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.file-wrapper .icon {
+    font-size: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.file-wrapper .icon:hover {
+    opacity: 1;
+}
+
+.file-wrapper.active {
+    background: #ffffff20;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filename-edit-input {
+    flex-grow: 1;
+    padding: 5px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.filename-edit-input.error {
+    border-color: #fb6a66;
+}
+
+.filename-error {
+    color: #fb6a66;
+    background-color: #111;
+    font-size: 12.5px;
+    padding: 6px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.file-extension {
+    padding: 5px;
 }
 
 #main-editor {
@@ -399,4 +522,58 @@ footer {
 
 .analyze-button:hover {
     background: #91e076;
+}
+
+#file-stats {
+    font-size: 14px;
+    padding: 8px;
+    background: #00000030;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#drop-zone {
+    min-height: 200px;
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+#drop-zone.drag-over {
+    border-color: #aeff8c;
+    background: #aeff8c20;
+}
+
+#drop-zone p {
+    text-align: center;
+    color: #ffffff80;
+    margin-bottom: 15px;
+}
+
+#file-list {
+    flex-grow: 1;
+    min-height: 50px;
+}
+
+#drop-zone {
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+#drop-zone.drag-over {
+    border-color: #aeff8c;
+    background: #aeff8c20;
+}
+
+#drop-zone p {
+    margin-bottom: 15px;
+    color: #ffffff80;
 }

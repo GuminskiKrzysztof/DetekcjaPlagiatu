@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Dodaj projekt{% endblock %}
+
+{% block content %}
+<div class="center-main">
+    <div id="add-project-screen">
+        <h2>Dodaj swój projekt</h2>
+        <div>
+            <div id="drop-zone">
+                <p>Przeciągnij i upuść pliki tutaj</p>
+                <div id="file-list"></div>
+            </div>
+            <button id="create-button">Stwórz</button>
+            <input id="file-input" type="file" accept=".cpp,.py,.zip" multiple style="display: none;">
+            <button id="select-file-button">Wybierz z urządzenia</button>
+            <button id="next-button">Dalej</button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script/add-project-screen.js') }}" type="module"></script>
+{% endblock %}
