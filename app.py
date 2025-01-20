@@ -28,12 +28,12 @@ def jak_to_dziala():
 def o_nas():
     return render_template('about-us.html', active_page='about-us')
 
-@app.route('/analizuj-kod')
-def analizuj_kod():
-    return render_template('analyze-code.html', active_page='analyze-code')
+@app.route('/dodaj-projekt')
+def dodaj_projekt():
+    return render_template('add-project.html', active_page='add-project')
 
-@app.route('/edytor-kod')
-def edytor_kod():
+@app.route('/edytor')
+def edytor():
     return render_template('editor-code.html', active_page='analyze-code')
 
 # Obsługa API dla kodów Python

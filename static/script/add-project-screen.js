@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let files = [];
 
     createButton.addEventListener("click", function() {
-        window.location.href = "/edytor-kod";
+        window.location.href = "/edytor";
     });
 
     selectFileButton.addEventListener("click", function() {
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
     nextButton.addEventListener("click", function() {
         if (files.length > 0) {
             localStorage.setItem("selectedFiles", JSON.stringify(files));
-            window.location.href = "/edytor-kod";
+            window.location.href = "/edytor";
         }
     });
 
