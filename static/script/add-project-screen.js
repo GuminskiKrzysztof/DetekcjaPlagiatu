@@ -185,10 +185,10 @@ Promise.all([
     }
 
     fileInput.addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (file) {
+        const files = Array.from(event.target.files);
+        files.forEach(file => {
             handleFile(file);
-        }
+        });
     });
 
     nextButton.addEventListener("click", async function() {
