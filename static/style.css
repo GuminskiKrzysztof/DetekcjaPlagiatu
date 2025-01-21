@@ -568,7 +568,7 @@ footer {
 }
 
 .CodeMirror-gutters {
-    background-color: #181a5430 !important;
+    background-color: #181a5450 !important;
     border-right: 1px solid #2a2d8f !important;
     padding-right: 5px;
 }
@@ -615,6 +615,18 @@ footer {
 .CodeMirror .cm-builtin { color: #ffda8a !important; }
 .CodeMirror .cm-special { color: #ffda8a !important; }
 .CodeMirror .cm-type { color: #ffda8a !important; }
+
+.CodeMirror-activeline-background {
+    background: #181a5470 !important;
+}
+
+.CodeMirror-activeline-gutter {
+    background-color: #19185d50 !important;
+}
+
+.CodeMirror-activeline .CodeMirror-linenumber {
+    color: #eee !important;
+}
 
 /* Analysis buttons */
 .analyze-button {

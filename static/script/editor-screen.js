@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         autofocus: true,
         matchBrackets: true,
         autoCloseBrackets: true,
-        placeholder: "Wpisz kod"
+        placeholder: "Wpisz kod",
+        styleActiveLine: true
     });
 
     await handleStoredFiles();
