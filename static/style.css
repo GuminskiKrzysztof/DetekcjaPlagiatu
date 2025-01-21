@@ -397,7 +397,12 @@ footer {
     font-size: 18px;
     font-weight: bold;
     border: none;
-    padding: 10px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -668,7 +673,7 @@ footer {
 }
 
 .file-type-button:hover {
-    background-color: #aeff8c;
+    background-color: #d1d4d1;
     color: #050510;
 }
 
@@ -676,9 +681,4 @@ footer {
     width: 20px;
     height: 20px;
     object-fit: contain;
-}
-
-/* Remove any conflicting modal styles if they exist */
-.modal, .modal-content, .file-type-buttons {
-    display: none !important;
 }
