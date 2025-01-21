@@ -556,18 +556,54 @@ footer {
     height: 100%;
 }
 
+/* Custom CodeMirror theme */
 .CodeMirror {
     width: 100%;
     height: 100% !important;
-    font-family: Consolas, monospace;
-    font-size: 16px;
+    font-family: 'Source Code Pro', Consolas, monospace;
+    font-size: 14px;
     background-color: transparent !important;
+    color: #ffffff !important;
+    letter-spacing: 0.3px;
 }
 
 .CodeMirror-gutters {
-    background-color: #00000050 !important;
-    border-right: 1px solid #333 !important;
+    background-color: #181a5430 !important;
+    border-right: 1px solid #2a2d8f !important;
+    padding-right: 5px;
 }
+
+.CodeMirror-cursor {
+    border-left: 2px solid #c5ff99;
+}
+
+.CodeMirror-selected { 
+    background: rgba(251, 128, 126, 0.2); 
+}
+
+.CodeMirror-focused .CodeMirror-selected { 
+    background: rgba(251, 128, 126, 0.3); 
+}
+
+.CodeMirror pre {
+    font-weight: 400;
+}
+
+.CodeMirror-line {
+    line-height: 1.6;
+}
+
+.CodeMirror .cm-keyword { color: #ff4d4d !important; }
+.CodeMirror .cm-def { color: #c5ff99 !important; }
+.CodeMirror .cm-variable { color: #ffffff !important; }
+.CodeMirror .cm-operator { color: #ff4d4d !important; }
+.CodeMirror .cm-number { color: #8b8fff !important; }
+.CodeMirror .cm-string { color: #8b8fff !important; }
+.CodeMirror .cm-comment { color: #aeff8c !important; }
+.CodeMirror .cm-property { color: #fb807e !important; }
+.CodeMirror .cm-builtin { color: #ffda8a !important; }
+.CodeMirror .cm-special { color: #ffda8a !important; }
+.CodeMirror .cm-type { color: #ffda8a !important; }
 
 /* Analysis buttons */
 .analyze-button {

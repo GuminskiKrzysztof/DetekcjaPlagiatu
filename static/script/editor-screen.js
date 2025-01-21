@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Initialize CodeMirror before handling stored files
     editor = CodeMirror(codeEditorElement, {
         mode: "python",
-        theme: "dracula",
         lineNumbers: true,
         indentUnit: 4,
         tabSize: 4,
