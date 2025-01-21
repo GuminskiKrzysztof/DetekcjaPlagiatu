@@ -5,7 +5,19 @@
 <div class="center-main">
     <div id="editor-screen">
         <div id="left-panel">
-            <button id="add-file-button">+</button>
+            <div class="file-type-dropdown">
+                <button id="add-file-button">+</button>
+                <div id="file-type-menu" class="dropdown-content">
+                    <button class="file-type-button" data-extension=".py">
+                        <img src="{{ url_for('static', filename='img/python.png') }}" alt="Python" class="language-icon">
+                        Python (.py)
+                    </button>
+                    <button class="file-type-button" data-extension=".cpp">
+                        <img src="{{ url_for('static', filename='img/cpp.png') }}" alt="C++" class="language-icon">
+                        C++ (.cpp)
+                    </button>
+                </div>
+            </div>
             <div id="files-container" class="files">
             </div>
         </div>

@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const codeEditor = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
+    const modal = document.getElementById("file-type-modal");
+    const fileTypeMenu = document.getElementById("file-type-menu");
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -60,17 +62,34 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     await handleStoredFiles();
 
-    addFileButton.addEventListener("click", function() {
-        const fileId = generateFileId();
-        const baseName = `plik${filesContainer.children.length + 1}`;
-        const extension = ".py";
-        const newFileName = generateUniqueFileName(baseName + extension);
+    addFileButton.addEventListener("click", function(e) {
+        e.stopPropagation();
+        fileTypeMenu.classList.toggle("show");
+    });
 
-        fileCodes.set(fileId, "");
-        const fileElement = createFileElement(fileId, newFileName);
-        filesContainer.appendChild(fileElement);
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function(e) {
+        if (!e.target.matches('#add-file-button')) {
+            fileTypeMenu.classList.remove("show");
+        }
+    });
 
-        setActiveFile(fileId);
+    const fileTypeButtons = document.querySelectorAll(".file-type-button");
+    fileTypeButtons.forEach(button => {
+        button.addEventListener("click", function(e) {
+            e.stopPropagation();
+            const extension = this.dataset.extension;
+            const fileId = generateFileId();
+            const baseName = `plik${filesContainer.children.length + 1}`;
+            const newFileName = generateUniqueFileName(baseName + extension);
+
+            fileCodes.set(fileId, "");
+            const fileElement = createFileElement(fileId, newFileName);
+            filesContainer.appendChild(fileElement);
+
+            setActiveFile(fileId);
+            fileTypeMenu.classList.remove("show");
+        });
     });
 
     function generateUniqueFileName(fileName) {
