@@ -1,3 +1,4 @@
+/* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
 
 /* Reset and base styles */
@@ -36,14 +37,7 @@ input, button, select, textarea {
     color: #000;
 }
 
-/* Wrapper */
-#wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header */
+/* Header and navigation */
 header {
     position: fixed;
     top: 0;
@@ -115,7 +109,7 @@ header {
     background: linear-gradient(to bottom, #050510, #05051000);
 }
 
-/* Main content */
+/* Main layout */
 main {
     margin-top: 120px;
     flex: 1;
@@ -171,6 +165,7 @@ footer {
     text-align: right;
 }
 
+/* Animations */
 @keyframes slide-in-left {
     0% {
         transform: translateX(-8%);
@@ -206,7 +201,7 @@ footer {
     opacity: 0;
 }
 
-/* Rotating circle */
+/* Rotating circle and icons */
 .center-container {
     position: relative;
     width: 300px;
@@ -357,7 +352,7 @@ footer {
     background-color: #91e076;
 }
 
-/* Editor screen */
+/* Editor screen layout */
 #editor-screen {
     display: flex;
     height: 100%;
@@ -365,6 +360,7 @@ footer {
     background-color: #050510;
 }
 
+/* Left and right panels */
 #left-panel, #right-panel {
     width: 20%;
     background: #111;
@@ -385,12 +381,14 @@ footer {
     align-items: center;
 }
 
+/* File management */
 .files {
     flex-grow: 1;
     overflow-y: auto;
     margin-top: 20px;
 }
 
+/* Add file button */
 #add-file-button {
     background: #aeff8c;
     color: #050510;
@@ -411,225 +409,6 @@ footer {
 }
 
 #add-file-button:hover {
-    background: #91e076;
-}
-
-.file-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 10px;
-    border-radius: 4px;
-    margin: 5px 0;
-    position: relative;
-}
-
-.file-wrapper:hover {
-    background: #FFFFFF10;
-}
-
-.file-wrapper:hover .icon {
-    opacity: 0.45;
-}
-
-.file-wrapper p {
-    margin: 0;
-    flex-grow: 1;
-    cursor: pointer;
-}
-
-.file-wrapper .icon {
-    font-size: 16px;
-    margin-left: 10px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.file-wrapper .icon:hover {
-    opacity: 1;
-}
-
-.file-wrapper.active {
-    background: #ffffff20;
-}
-
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.filename-edit-input {
-    flex-grow: 1;
-    padding: 5px;
-    background-color: transparent;
-    color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-}
-
-.filename-edit-input.error {
-    border-color: #fb6a66;
-}
-
-.filename-error {
-    color: #fb6a66;
-    background-color: #111;
-    font-size: 12.5px;
-    padding: 6px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-}
-
-.file-extension {
-    padding: 5px;
-}
-
-#main-editor {
-    flex-grow: 1;
-    background-color: #00000080;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-#code-editor {
-    width: 100%;
-    height: 90%;
-    background-color: transparent;
-    border: 1px solid #444;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 5px;
-    resize: none;
-}
-
-#code-editor::placeholder {
-    color: #666;
-}
-
-.analyze-button {
-    background: #aeff8c;
-    color: #050510;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.analyze-button:hover {
-    background: #91e076;
-}
-
-#file-stats {
-    font-size: 14px;
-    padding: 8px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-#drop-zone {
-    min-height: 200px;
-    border: 2px dashed #aeff8c50;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 15px 0;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
-}
-
-#drop-zone.drag-over {
-    border-color: #aeff8c;
-    background: #aeff8c20;
-}
-
-#drop-zone p {
-    text-align: center;
-    color: #ffffff80;
-    margin-bottom: 15px;
-}
-
-#file-list {
-    flex-grow: 1;
-    min-height: 50px;
-}
-
-#drop-zone {
-    border: 2px dashed #aeff8c50;
-    border-radius: 10px;
-    padding: 40px;
-    text-align: center;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-}
-
-#drop-zone.drag-over {
-    border-color: #aeff8c;
-    background: #aeff8c20;
-}
-
-#drop-zone p {
-    margin-bottom: 15px;
-    color: #ffffff80;
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #111;
-    padding: 30px;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid #333;
-}
-
-.modal-content h3 {
-    margin-bottom: 20px;
-    color: #aeff8c;
-}
-
-.file-type-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-.file-type-button {
-    background: #aeff8c;
-    color: #050510;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.file-type-button:hover {
     background: #91e076;
 }
 
@@ -673,7 +452,7 @@ footer {
 }
 
 .file-type-button:hover {
-    background-color: #d1d4d1;
+    background-color: #aeff8c;
     color: #050510;
 }
 
@@ -681,4 +460,168 @@ footer {
     width: 20px;
     height: 20px;
     object-fit: contain;
+}
+
+/* File list items */
+.file-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    position: relative;
+}
+
+.file-wrapper:hover {
+    background: #FFFFFF10;
+}
+
+.file-wrapper.active {
+    background: #ffffff20;
+}
+
+.file-wrapper p {
+    margin: 0;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+/* File icons */
+.file-wrapper .icon {
+    font-size: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.file-wrapper:hover .icon {
+    opacity: 0.45;
+}
+
+.file-wrapper .icon:hover {
+    opacity: 1;
+}
+
+/* File name editing */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filename-edit-input {
+    flex-grow: 1;
+    padding: 5px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.filename-edit-input.error {
+    border-color: #fb6a66;
+}
+
+.filename-error {
+    color: #fb6a66;
+    background-color: #111;
+    font-size: 12.5px;
+    padding: 6px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.file-extension {
+    padding: 5px;
+}
+
+/* Code editor */
+#main-editor {
+    flex-grow: 1;
+    background-color: #00000080;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#code-editor {
+    width: 100%;
+    height: 90%;
+    background-color: transparent;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    resize: none;
+}
+
+#code-editor::placeholder {
+    color: #666;
+}
+
+/* Analysis buttons */
+.analyze-button {
+    background: #aeff8c;
+    color: #050510;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.analyze-button:hover {
+    background: #91e076;
+}
+
+/* File stats */
+#file-stats {
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Drop zone */
+#drop-zone {
+    min-height: 200px;
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+#drop-zone.drag-over {
+    border-color: #aeff8c;
+    background: #aeff8c20;
+}
+
+#drop-zone p {
+    text-align: center;
+    color: #ffffff80;
+    margin-bottom: 15px;
+}
+
+#file-list {
+    flex-grow: 1;
+    min-height: 50px;
+}
+
+/* Remove redundant modal styles */
+.modal, .modal-content, .file-type-buttons {
+    display: none !important;
 }
