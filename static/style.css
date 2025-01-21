@@ -589,11 +589,23 @@ footer {
 }
 
 .CodeMirror-selected { 
-    background: rgba(251, 128, 126, 0.2); 
+    background: #19185d80 !important; 
 }
 
 .CodeMirror-focused .CodeMirror-selected { 
-    background: rgba(251, 128, 126, 0.3); 
+    background: #19185db0 !important; 
+}
+
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+    background: #19185db0 !important;
+}
+
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+    background: #19185db0 !important;
 }
 
 .CodeMirror pre {
@@ -615,6 +627,7 @@ footer {
 .CodeMirror .cm-builtin { color: #ffda8a !important; }
 .CodeMirror .cm-special { color: #ffda8a !important; }
 .CodeMirror .cm-type { color: #ffda8a !important; }
+.CodeMirror .cm-meta { color: #777 !important; }
 
 .CodeMirror-activeline-background {
     background: #181a5470 !important;
