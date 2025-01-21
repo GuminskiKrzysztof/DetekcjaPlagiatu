@@ -30,7 +30,7 @@ async function getStoredFiles() {
 document.addEventListener("DOMContentLoaded", async function() {
     const addFileButton = document.getElementById("add-file-button");
     const filesContainer = document.getElementById("files-container");
-    const codeEditor = document.getElementById("code-editor");
+    const codeEditorElement = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
     const modal = document.getElementById("file-type-modal");
@@ -39,26 +39,47 @@ document.addEventListener("DOMContentLoaded", async function() {
     const fileCodes = new Map();
     let activeFileName = null;
     let fileIdCounter = 0;
+    let editor; // Declare editor in wider scope
 
     function generateFileId() {
         return 'file-' + (fileIdCounter++);
     }
 
     async function handleStoredFiles() {
-        const storedFiles = JSON.parse(localStorage.getItem("selectedFiles") || "[]");
-        localStorage.removeItem("selectedFiles");
+        try {
+            // Try to get files from IndexedDB first
+            const dbFiles = await getStoredFiles();
+            const storedFiles = Array.isArray(dbFiles) ? dbFiles : JSON.parse(localStorage.getItem("selectedFiles") || "[]");
+            localStorage.removeItem("selectedFiles");
 
-        storedFiles.forEach(fileObj => {
-            const fileId = fileObj.id || generateFileId();
-            fileCodes.set(fileId, fileObj.content);
-            const fileElement = createFileElement(fileId, fileObj.name);
-            filesContainer.appendChild(fileElement);
+            for (const fileObj of storedFiles) {
+                const fileId = fileObj.id || generateFileId();
+                fileCodes.set(fileId, fileObj.content);
+                const fileElement = createFileElement(fileId, fileObj.name);
+                filesContainer.appendChild(fileElement);
 
-            if (filesContainer.children.length === 1) {
-                setActiveFile(fileId);
+                if (filesContainer.children.length === 1) {
+                    setActiveFile(fileId);
+                }
             }
-        });
+        } catch (error) {
+            console.error("Error handling stored files:", error);
+        }
     }
+
+    // Initialize CodeMirror before handling stored files
+    editor = CodeMirror(codeEditorElement, {
+        mode: "python",
+        theme: "dracula",
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        lineWrapping: true,
+        autofocus: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        placeholder: "Wpisz kod"
+    });
 
     await handleStoredFiles();
 
@@ -147,14 +168,25 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function setActiveFile(fileId) {
         activeFileName = fileId;
-        const code = fileCodes.get(fileId);
-        codeEditor.value = code || '';
+        const code = fileCodes.get(fileId) || '';
+        
+        // Ensure editor exists before using it
+        if (editor) {
+            editor.setValue(code);
+
+            // Set mode based on file extension
+            const fileWrapper = filesContainer.querySelector(`[data-file-id="${fileId}"]`);
+            if (fileWrapper) {
+                const fileName = fileWrapper.dataset.fileName;
+                const extension = fileName.split('.').pop().toLowerCase();
+                const mode = extension === 'py' ? 'python' : extension === 'cpp' ? 'text/x-c++src' : 'text/plain';
+                editor.setOption('mode', mode);
+            }
+        }
 
         const fileWrappers = filesContainer.querySelectorAll(".file-wrapper");
         fileWrappers.forEach((wrapper) => wrapper.classList.remove("active"));
-        const activeWrapper = filesContainer.querySelector(
-            `[data-file-id="${fileId}"]`
-        );
+        const activeWrapper = filesContainer.querySelector(`[data-file-id="${fileId}"]`);
         if (activeWrapper) {
             activeWrapper.classList.add("active");
         }
@@ -162,104 +194,22 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function clearEditor() {
         activeFileName = null;
-        codeEditor.value = "";
+        if (editor) {
+            editor.setValue("");
+        }
     }
 
-    codeEditor.addEventListener("input", function() {
-        if (activeFileName) {
-            fileCodes.set(activeFileName, codeEditor.value);
-        }
-    });
-
-    function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
-        const currentName = fileNameElement.textContent;
-        const lastDotIndex = currentName.lastIndexOf(".");
-        const namePart = currentName.substring(0, lastDotIndex);
-        const extensionPart = currentName.substring(lastDotIndex);
-
-        const inputWrapper = document.createElement("div");
-        inputWrapper.classList.add("input-wrapper");
-        
-        const input = document.createElement("input");
-        input.type = "text";
-        input.value = namePart;
-        input.classList.add("filename-edit-input");
-        
-        const extensionSpan = document.createElement("span");
-        extensionSpan.textContent = extensionPart;
-        extensionSpan.classList.add("file-extension");
-
-        toggleVisibility(editIcon);
-        toggleVisibility(deleteIcon);
-
-        function handleNameChange() {
-            const newNamePart = input.value.trim() || namePart;
-            const newName = newNamePart + extensionPart;
-
-            // Check for duplicate filename
-            const files = filesContainer.querySelectorAll('.file-wrapper');
-            const isDuplicate = Array.from(files).some(file => 
-                file !== fileWrapper && file.dataset.fileName === newName
-            );
-
-            if (isDuplicate) {
-                input.classList.add('error');
-                let errorMsg = inputWrapper.querySelector('.filename-error');
-                if (!errorMsg) {
-                    errorMsg = document.createElement('div');
-                    errorMsg.classList.add('filename-error');
-                    errorMsg.textContent = 'Plik o tej nazwie już istnieje.';
-                    inputWrapper.appendChild(errorMsg);
-                }
-                input.focus();
-                return false;
-            }
-
-            fileWrapper.dataset.fileName = newName;
-            fileNameElement.textContent = newName;
-
-            if (activeFileName === currentName) {
-                activeFileName = newName;
-            }
-
-            fileNameElement.style.display = "block";
-            inputWrapper.remove();
-
-            toggleVisibility(editIcon);
-            toggleVisibility(deleteIcon);
-            return true;
-        }
-
-        input.addEventListener("blur", handleNameChange);
-
-        input.addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                if (handleNameChange()) {
-                    input.blur();
-                }
+    // Attach editor change event handler
+    if (editor) {
+        editor.on("change", function() {
+            if (activeFileName) {
+                fileCodes.set(activeFileName, editor.getValue());
             }
         });
-
-        input.addEventListener("input", function() {
-            input.classList.remove('error');
-            const errorMsg = inputWrapper.querySelector('.filename-error');
-            if (errorMsg) {
-                errorMsg.remove();
-            }
-        });
-
-        fileNameElement.style.display = "none";
-        inputWrapper.appendChild(input);
-        inputWrapper.appendChild(extensionSpan);
-        fileWrapper.insertBefore(inputWrapper, fileNameElement);
-        input.focus();
-
-        input.setSelectionRange(0, namePart.length);
     }
 
     analyzeFileButton.addEventListener("click", async function() {
-        const code = codeEditor.value.trim();
+        const code = editor.getValue().trim();
         if (!code) {
             alert("Proszę wpisać kod do analizy.");
             return;
