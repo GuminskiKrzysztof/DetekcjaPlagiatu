@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const analyzeProjectButton = document.getElementById("analyze-project-button");
     const modal = document.getElementById("file-type-modal");
     const fileTypeMenu = document.getElementById("file-type-menu");
+    const noFileMessage = document.getElementById("no-file-message");
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -80,21 +81,27 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Initialize CodeMirror before handling stored files
+    // Initialize editor in disabled state
     editor = CodeMirror(codeEditorElement, {
         mode: "python",
         lineNumbers: true,
         indentUnit: 4,
         tabSize: 4,
         lineWrapping: true,
-        autofocus: true,
+        autofocus: false, // Changed from true to false
         matchBrackets: true,
         autoCloseBrackets: true,
-        placeholder: "Wpisz kod",
-        styleActiveLine: true
+        placeholder: "Wybierz lub utwórz plik aby rozpocząć edycję",
+        styleActiveLine: true,
+        readOnly: true // Start with editor disabled
     });
 
     await handleStoredFiles();
+
+    // Set initial editor state
+    if (!filesContainer.children.length) {
+        clearEditor();
+    }
 
     addFileButton.addEventListener("click", function(e) {
         e.stopPropagation();
@@ -183,9 +190,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         activeFileName = fileId;
         const code = fileCodes.get(fileId) || '';
         
-        // Ensure editor exists before using it
         if (editor) {
             editor.setValue(code);
+            enableEditor();
 
             // Set mode based on file extension
             const fileWrapper = filesContainer.querySelector(`[data-file-id="${fileId}"]`);
@@ -209,10 +216,19 @@ document.addEventListener("DOMContentLoaded", async function() {
         activeFileName = null;
         if (editor) {
             editor.setValue("");
+            codeEditorElement.classList.remove("active");
+            noFileMessage.style.display = "block";
         }
     }
 
-    // Attach editor change event handler
+    function enableEditor() {
+        if (editor) {
+            codeEditorElement.classList.add("active");
+            noFileMessage.style.display = "none";
+            editor.refresh();
+        }
+    }
+
     if (editor) {
         editor.on("change", function() {
             if (activeFileName) {
