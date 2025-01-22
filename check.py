@@ -1,11 +1,6 @@
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-from flask import Flask, render_template, request, jsonify
-from backend.services import CodeCategorizationService
 import sys
 import os
+from backend.services import CodeCategorizationService
 import pandas as pd
 
 # Dodaj ścieżkę do folderu 'code_s'
@@ -14,8 +9,6 @@ sys.path.append(os.path.abspath('../code_similarities'))
 # Teraz możesz zaimportować funkcje z code_similarities.py
 from code_similarities.similarity import *
 
-
-#Inicjalizacja usług
 python_service = CodeCategorizationService(
     model_path="backend/models/trained_model",
     csv_path="backend/data/all_python_codes.csv"
@@ -26,41 +19,18 @@ cpp_service = CodeCategorizationService(
     csv_path="backend/data/all_cpp_codes.csv"
 )
 
-app = Flask(__name__)
 
+#def predict_category_python():
+#    code = data.get("code", "")
+#    # predicted_category = python_service.predict_category(code)
+#    # return jsonify({"Predicted Category": predicted_category})
+#    return
 
-# Obsługa frontendowych stron HTML
-@app.route('/')
-def home():
-    return render_template('index.html', active_page='home')
+#def search_codes_python():
+#    category = data.get("category", "")
+#    # matching_codes = python_service.search_codes_by_category(category)
+#    return jsonify({"Codes": pd.read_csv("backend/data/all_python_codes.csv")})
 
-
-@app.route('/jak-to-dziala')
-def jak_to_dziala():
-    return render_template('how-it-works.html', active_page='how-it-works')
-
-
-@app.route('/analizuj-kod')
-def analizuj_kod():
-    return render_template('analyze-code.html', active_page='analyze-code')
-
-
-@app.route('/o-nas')
-def o_nas():
-    return render_template('about-us.html', active_page='about-us')
-
-
-@app.route('/dodaj-projekt')
-def dodaj_projekt():
-    return render_template('add-project.html', active_page='add-project')
-
-
-@app.route('/edytor')
-def edytor():
-    return render_template('editor-code.html', active_page='analyze-code')
-
-
-@app.route('/python_information', methods=['POST'])
 def python_information(code):
     plagiarism = False
     predicted_category = python_service.predict_category(code)
@@ -81,10 +51,8 @@ def python_information(code):
         i = i + 1
     if max_probality > 0.5:
         plagiarism = True
-    return {"Information: ": [plagiarism, max_probality, matching_codes[max_index]]}
+    print({"Information: ": [plagiarism, max_probality, matching_codes[max_index]]})
 
-
-@app.route('/cpp_information', methods=['POST'])
 def cpp_information(code):
     plagiarism = False
     predicted_category = cpp_service.predict_category(code)
@@ -105,22 +73,26 @@ def cpp_information(code):
         i = i + 1
     if max_probality > 0.5:
         plagiarism = True
-    return {"Information: ": [plagiarism, max_probality, matching_codes[max_index]]}
+    print({"Information: ": [plagiarism, max_probality, matching_codes[max_index]]})
 
-# Obsługa API dla kodów C++
-# @app.route('/predict_category_cpp', methods=['POST'])
-# def predict_category_cpp():
-#     data = request.get_json()
-#     code = data.get("code", "")
-#     predicted_category = cpp_service.predict_category(code)
-#     return jsonify({"Predicted Category": predicted_category})
+code1 = """#include <bits/stdc++.h> 
+using namespace std; 
+  
+// Driver Code 
+int main() 
+{ 
+  
+    // Variables 
+    auto an_int = 26; 
+    auto a_bool = false; 
+    auto a_float = 26.24; 
+    auto ptr = &a_float; 
+  
+    // Print typeid 
+    cout << typeid(a_bool).name() << "\n"; 
+    cout << typeid(an_int).name() << "\n"; 
+    return 0; 
+}
+"""
 
-# @app.route('/search_codes_c', methods=['POST'])
-# def search_codes_cpp():
-#     data = request.get_json()
-#     category = data.get("category", "")
-#     matching_codes = cpp_service.search_codes_by_category(category)
-#     return jsonify({"Codes": matching_codes})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+cpp_information(code1)
