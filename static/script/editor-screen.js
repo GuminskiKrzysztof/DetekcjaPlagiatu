@@ -1,3 +1,5 @@
+import { toggleVisibility } from "./utils.js";
+
 const DB_NAME = 'fileStorage';
 const STORE_NAME = 'files';
 const FILE_MODES = {
@@ -270,4 +272,92 @@ document.addEventListener("DOMContentLoaded", async function() {
     analyzeProjectButton.addEventListener("click", function() {
         alert("Analiza całego projektu w przygotowaniu...");
     });
+
+    function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
+        const currentName = fileNameElement.textContent;
+        const lastDotIndex = currentName.lastIndexOf(".");
+        const namePart = currentName.substring(0, lastDotIndex);
+        const extensionPart = currentName.substring(lastDotIndex);
+
+        const inputWrapper = document.createElement("div");
+        inputWrapper.classList.add("input-wrapper");
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = namePart;
+        input.classList.add("filename-edit-input");
+
+        const extensionSpan = document.createElement("span");
+        extensionSpan.textContent = extensionPart;
+        extensionSpan.classList.add("file-extension");
+
+        toggleVisibility(editIcon);
+        toggleVisibility(deleteIcon);
+
+        function handleNameChange() {
+            const newNamePart = input.value.trim() || namePart;
+            const newName = newNamePart + extensionPart;
+
+            // Check for duplicate filename
+            const files = filesContainer.querySelectorAll('.file-wrapper');
+            const isDuplicate = Array.from(files).some(file => 
+                file !== fileWrapper && file.dataset.fileName === newName
+            );
+
+            if (isDuplicate) {
+                input.classList.add('error');
+                let errorMsg = inputWrapper.querySelector('.filename-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.classList.add('filename-error');
+                    errorMsg.textContent = 'Plik o tej nazwie już istnieje.';
+                    inputWrapper.appendChild(errorMsg);
+                }
+                input.focus();
+                return false;
+            }
+
+            fileWrapper.dataset.fileName = newName;
+            fileNameElement.textContent = newName;
+
+            if (activeFileName === fileWrapper.dataset.fileId) {
+                // Aktualizujemy tylko fileId, nie nazwę
+                fileNameElement.textContent = newName;
+            }
+
+            fileNameElement.style.display = "block";
+            inputWrapper.remove();
+
+            toggleVisibility(editIcon);
+            toggleVisibility(deleteIcon);
+            return true;
+        }
+
+        input.addEventListener("blur", handleNameChange);
+
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                if (handleNameChange()) {
+                    input.blur();
+                }
+            }
+        });
+
+        input.addEventListener("input", function() {
+            input.classList.remove('error');
+            const errorMsg = inputWrapper.querySelector('.filename-error');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
+        });
+
+        fileNameElement.style.display = "none";
+        inputWrapper.appendChild(input);
+        inputWrapper.appendChild(extensionSpan);
+        fileWrapper.insertBefore(inputWrapper, fileNameElement);
+        input.focus();
+
+        input.setSelectionRange(0, namePart.length);
+    }
 });

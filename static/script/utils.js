@@ -1,3 +1,7 @@
 export function toggleVisibility(element) {
-    element.style.display = element.style.display === 'none' ? 'flex' : 'none';
+    if (element.style.display === "none") {
+        element.style.display = "";
+    } else {
+        element.style.display = "none";
+    }
 }
