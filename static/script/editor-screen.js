@@ -9,20 +9,31 @@ async function getStoredFiles() {
         
         request.onerror = () => reject(request.error);
         
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME);
+            }
+        };
+        
         request.onsuccess = () => {
             const db = request.result;
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            
-            const getRequest = store.get('selectedFiles');
-            
-            getRequest.onsuccess = () => {
-                // Clear the data after reading
-                store.delete('selectedFiles');
-                resolve(getRequest.result || {});
-            };
-            
-            getRequest.onerror = () => reject(getRequest.error);
+            try {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                
+                const getRequest = store.get('selectedFiles');
+                
+                getRequest.onsuccess = () => {
+                    store.delete('selectedFiles');
+                    resolve(getRequest.result || {});
+                };
+                
+                getRequest.onerror = () => reject(getRequest.error);
+            } catch (error) {
+                // Fallback to localStorage if IndexedDB fails
+                resolve(JSON.parse(localStorage.getItem("selectedFiles") || "[]"));
+            }
         };
     });
 }
