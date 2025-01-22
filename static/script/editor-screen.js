@@ -93,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         autofocus: false, // Changed from true to false
         matchBrackets: true,
         autoCloseBrackets: true,
-        placeholder: "Wybierz lub utwórz plik aby rozpocząć edycję",
         styleActiveLine: true,
         readOnly: true // Start with editor disabled
     });
@@ -176,7 +175,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             fileCodes.delete(fileId);
             fileWrapper.remove();
             if (activeFileName === fileId) {
-                clearEditor();
+                const remainingFiles = filesContainer.querySelectorAll('.file-wrapper');
+                if (remainingFiles.length > 0) {
+                    setActiveFile(remainingFiles[0].dataset.fileId);
+                } else {
+                    clearEditor();
+                }
             }
         });
 
