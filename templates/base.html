@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Czyj to kod?{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="static/img/search.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -27,8 +29,8 @@
                             <p class="second-line">kod?</p>
                         </li>
                         <li>
-                            <a href="{{ url_for('analizuj_kod') }}" class="{{ 'active' if active_page == 'analyze-code' else '' }}">
-                                {{ '# ' if active_page == 'analyze-code' else '' }}Analizuj kod
+                            <a href="{{ url_for('dodaj_projekt') }}" class="{{ 'active' if active_page == 'add-project' else '' }}">
+                                {{ '# ' if active_page == 'add-project' else '' }}Dodaj projekt
                             </a>
                         </li>
                         <li>
