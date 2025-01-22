@@ -1,7 +1,9 @@
-import { toggleVisibility } from "./utils.js";
-
 const DB_NAME = 'fileStorage';
 const STORE_NAME = 'files';
+const FILE_MODES = {
+    'py': 'python',
+    'cpp': 'text/x-c++src'
+};
 
 async function getStoredFiles() {
     return new Promise((resolve, reject) => {
@@ -190,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (fileWrapper) {
                 const fileName = fileWrapper.dataset.fileName;
                 const extension = fileName.split('.').pop().toLowerCase();
-                const mode = extension === 'py' ? 'python' : extension === 'cpp' ? 'text/x-c++src' : 'text/plain';
+                const mode = FILE_MODES[extension] || 'text/plain';
                 editor.setOption('mode', mode);
             }
         }
