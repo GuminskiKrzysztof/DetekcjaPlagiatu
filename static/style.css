@@ -762,3 +762,34 @@ footer {
 .cancel-button:hover {
     background: #e55550;
 }
+
+/* Analysis results */
+#analysis-results {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+#analysis-results.success {
+    border: 1px solid #aeff8c;
+}
+
+#analysis-results.warning {
+    border: 1px solid #fb6a66;
+}
+
+#result-title {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#result-similarity {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#result-actions {
+    margin-top: 15px;
+}

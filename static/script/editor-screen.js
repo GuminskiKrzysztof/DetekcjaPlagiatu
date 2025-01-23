@@ -53,6 +53,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     const noFileMessage = document.getElementById("no-file-message");
     const loadingIndicator = document.getElementById("loading-indicator");
     const cancelButton = document.getElementById("cancel-analysis");
+    const resultsPanel = document.getElementById("analysis-results");
+    const resultTitle = document.getElementById("result-title");
+    const resultSimilarity = document.getElementById("result-similarity");
+    const closeResults = document.getElementById("close-results");
     let currentAnalysis = null;
 
     const fileCodes = new Map();
@@ -251,6 +255,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         analyzeFileButton.style.display = 'none';
         analyzeProjectButton.style.display = 'none';
         loadingIndicator.style.display = 'block';
+        resultsPanel.style.display = 'none';
     }
 
     function hideLoading() {
@@ -309,11 +314,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const similarity = info[1];
                 const matchingCode = info[2];
                 
-                if (isPlagiarism) {
-                    alert(`Wykryto plagiat! Podobieństwo: ${(similarity * 100).toFixed(2)}%`);
-                } else {
-                    alert(`Nie wykryto plagiatu. Podobieństwo: ${(similarity * 100).toFixed(2)}%`);
-                }
+                showResults(isPlagiarism, similarity);
             } else {
                 console.error("Błąd podczas analizy kodu:", response.status, response.statusText);
                 alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
@@ -421,4 +422,19 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         input.setSelectionRange(0, namePart.length);
     }
+
+    function showResults(isPlagiarism, similarity) {
+        resultsPanel.style.display = 'block';
+        resultsPanel.className = isPlagiarism ? 'warning' : 'success';
+        
+        resultTitle.textContent = isPlagiarism ? 
+            'Wykryto podejrzenie plagiatu!' : 
+            'Nie wykryto plagiatu';
+        
+        resultSimilarity.textContent = `Podobieństwo: ${(similarity * 100).toFixed(2)}%`;
+    }
+
+    closeResults.addEventListener("click", () => {
+        resultsPanel.style.display = 'none';
+    });
 });
