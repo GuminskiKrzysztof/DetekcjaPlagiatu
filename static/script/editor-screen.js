@@ -250,10 +250,24 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
+        const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
+        const fileName = fileWrapper.dataset.fileName;
+        const extension = fileName.split('.').pop().toLowerCase();
+        let endpoint;
+        
+        if (extension === 'py') {
+            endpoint = '/python_information';
+        } else if (extension === 'cpp') {
+            endpoint = '/cpp_information';
+        } else {
+            alert("Nieobsługiwane rozszerzenie pliku.");
+            return;
+        }
+
         try {
-            const response = await fetch("/predict_category_python", {
+            const response = await fetch(endpoint, {
                 method: "POST",
-                body: JSON.stringify({ code }),
+                body: JSON.stringify({ code: code }), // Changed to send code in correct format
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -261,9 +275,17 @@ document.addEventListener("DOMContentLoaded", async function() {
             
             if (response.ok) {
                 const data = await response.json();
-                alert(`Przewidywana kategoria: ${data["Predicted Category"]}`);
-            }
-            else {
+                const info = data["Information: "];
+                const isPlagiarism = info[0];
+                const similarity = info[1];
+                const matchingCode = info[2];
+                
+                if (isPlagiarism) {
+                    alert(`Wykryto plagiat! Podobieństwo: ${(similarity * 100).toFixed(2)}%`);
+                } else {
+                    alert(`Nie wykryto plagiatu. Podobieństwo: ${(similarity * 100).toFixed(2)}%`);
+                }
+            } else {
                 console.error("Błąd podczas analizy kodu:", response.status, response.statusText);
                 alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
             }
