@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const fileTypeMenu = document.getElementById("file-type-menu");
     const noFileMessage = document.getElementById("no-file-message");
     const loadingIndicator = document.getElementById("loading-indicator");
+    const cancelButton = document.getElementById("cancel-analysis");
+    let currentAnalysis = null;
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -255,7 +257,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         analyzeFileButton.style.display = 'block';
         analyzeProjectButton.style.display = 'block';
         loadingIndicator.style.display = 'none';
+        currentAnalysis = null;
     }
+
+    cancelButton.addEventListener("click", function() {
+        if (currentAnalysis) {
+            currentAnalysis.abort();
+            hideLoading();
+        }
+    });
 
     analyzeFileButton.addEventListener("click", async function() {
         const code = editor.getValue().trim();
@@ -280,12 +290,16 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         try {
             showLoading();
+            const controller = new AbortController();
+            currentAnalysis = controller;
+            
             const response = await fetch(endpoint, {
                 method: "POST",
                 body: JSON.stringify({ code: code }),
                 headers: {
                     "Content-Type": "application/json"
-                }
+                },
+                signal: controller.signal
             });
             
             if (response.ok) {
@@ -305,8 +319,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                 alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
             }
         } catch (error) {
-            console.error("Błąd podczas wysyłania żądania:", error);
-            alert("Nie udało się połączyć z serwerem.");
+            if (error.name === 'AbortError') {
+                console.log('Analiza została anulowana');
+            } else {
+                console.error("Błąd podczas wysyłania żądania:", error);
+                alert("Nie udało się połączyć z serwerem.");
+            }
         } finally {
             hideLoading();
         }

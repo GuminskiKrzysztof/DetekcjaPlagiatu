@@ -746,3 +746,19 @@ footer {
     margin-bottom: 10px;
     font-size: 14px;
 }
+
+.cancel-button {
+    background: #fb6a66;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+    background: #e55550;
+}
