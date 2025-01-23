@@ -735,3 +735,14 @@ footer {
 .modal, .modal-content, .file-type-buttons {
     display: none !important;
 }
+
+/* Loading indicator */
+#loading-indicator {
+    text-align: center;
+    color: #ffffff;
+}
+
+#loading-indicator p {
+    margin-bottom: 10px;
+    font-size: 14px;
+}

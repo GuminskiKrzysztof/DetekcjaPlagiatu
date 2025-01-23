@@ -31,6 +31,10 @@
         <div id="right-panel">
             <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
             <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+            <div id="loading-indicator" style="display: none;">
+                <p>Analizuję...</p>
+                <img src="{{ url_for('static', filename='img/search.gif') }}" style="width: 115px;">
+            </div>
         </div>
     </div>
 </div>

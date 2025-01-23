@@ -51,11 +51,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const modal = document.getElementById("file-type-modal");
     const fileTypeMenu = document.getElementById("file-type-menu");
     const noFileMessage = document.getElementById("no-file-message");
+    const loadingIndicator = document.getElementById("loading-indicator");
 
     const fileCodes = new Map();
     let activeFileName = null;
     let fileIdCounter = 0;
-    let editor; // Declare editor in wider scope
+    let editor;
 
     function generateFileId() {
         return 'file-' + (fileIdCounter++);
@@ -63,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     async function handleStoredFiles() {
         try {
-            // Try to get files from IndexedDB first
             const dbFiles = await getStoredFiles();
             const storedFiles = Array.isArray(dbFiles) ? dbFiles : JSON.parse(localStorage.getItem("selectedFiles") || "[]");
             localStorage.removeItem("selectedFiles");
@@ -83,23 +83,21 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Initialize editor in disabled state
     editor = CodeMirror(codeEditorElement, {
         mode: "python",
         lineNumbers: true,
         indentUnit: 4,
         tabSize: 4,
         lineWrapping: true,
-        autofocus: false, // Changed from true to false
+        autofocus: false,
         matchBrackets: true,
         autoCloseBrackets: true,
         styleActiveLine: true,
-        readOnly: true // Start with editor disabled
+        readOnly: true 
     });
 
     await handleStoredFiles();
 
-    // Set initial editor state
     if (!filesContainer.children.length) {
         clearEditor();
     }
@@ -109,7 +107,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         fileTypeMenu.classList.toggle("show");
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", function(e) {
         if (!e.target.matches('#add-file-button')) {
             fileTypeMenu.classList.remove("show");
@@ -243,6 +240,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
+    function showLoading() {
+        analyzeFileButton.style.display = 'none';
+        analyzeProjectButton.style.display = 'none';
+        loadingIndicator.style.display = 'block';
+    }
+
+    function hideLoading() {
+        analyzeFileButton.style.display = 'block';
+        analyzeProjectButton.style.display = 'block';
+        loadingIndicator.style.display = 'none';
+    }
+
     analyzeFileButton.addEventListener("click", async function() {
         const code = editor.getValue().trim();
         if (!code) {
@@ -265,9 +274,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         try {
+            showLoading();
             const response = await fetch(endpoint, {
                 method: "POST",
-                body: JSON.stringify({ code: code }), // Changed to send code in correct format
+                body: JSON.stringify({ code: code }),
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -292,6 +302,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         } catch (error) {
             console.error("Błąd podczas wysyłania żądania:", error);
             alert("Nie udało się połączyć z serwerem.");
+        } finally {
+            hideLoading();
         }
     });
 
