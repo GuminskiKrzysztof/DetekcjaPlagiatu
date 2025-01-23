@@ -4,3 +4,5 @@ __pycache__/
 .vscode/
 .DS_Store
 env/
+backend/models/c_code_classification/
+backend/models/trained_model/
