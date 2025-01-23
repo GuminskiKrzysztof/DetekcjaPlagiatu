@@ -677,6 +677,40 @@ footer {
     color: #eee !important;
 }
 
+
+
+/* Code completion hints */
+.CodeMirror-hints {
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 90%;
+    font-family: 'Source Code Pro', Consolas, monospace;
+    max-height: 20em;
+    overflow-y: auto;
+    background: #1e1e1e !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5) !important;
+    border: 1px solid #333 !important;
+}
+
+.CodeMirror-hint {
+    margin: 0;
+    padding: 4px 6px;
+    border-radius: 2px;
+    white-space: pre;
+    color: #fff !important;
+    cursor: pointer;
+}
+
+li.CodeMirror-hint-active {
+    background: #19185d !important;
+    color: #aeff8c !important;
+}
+
 /* Analysis buttons */
 .analyze-button {
     background: #aeff8c;

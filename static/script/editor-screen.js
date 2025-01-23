@@ -99,7 +99,26 @@ document.addEventListener("DOMContentLoaded", async function() {
         matchBrackets: true,
         autoCloseBrackets: true,
         styleActiveLine: true,
-        readOnly: false  // Change this to false to enable editing
+        readOnly: false,  // Change this to false to enable editing
+        extraKeys: {"Ctrl-Space": "autocomplete"},
+        hintOptions: {
+            completeSingle: false,
+            alignWithWord: true,
+            closeOnUnfocus: true
+        }
+    });
+
+    // Enable automatic hints while typing
+    editor.on("keyup", function (cm, event) {
+        if (!cm.state.completionActive && // Don't show hints if already showing
+            event.keyCode != 13 && // Enter
+            event.keyCode != 27 && // Escape
+            event.keyCode != 37 && // Left arrow
+            event.keyCode != 38 && // Up arrow
+            event.keyCode != 39 && // Right arrow
+            event.keyCode != 40) { // Down arrow
+            CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+        }
     });
 
     await handleStoredFiles();
