@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         matchBrackets: true,
         autoCloseBrackets: true,
         styleActiveLine: true,
-        readOnly: true 
+        readOnly: false  // Change this to false to enable editing
     });
 
     await handleStoredFiles();
@@ -194,6 +194,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const code = fileCodes.get(fileId) || '';
         
         if (editor) {
+            editor.setOption('readOnly', false);
             editor.setValue(code);
             enableEditor();
 
@@ -213,6 +214,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (activeWrapper) {
             activeWrapper.classList.add("active");
         }
+
+        codeEditorElement.classList.add("active");
+        noFileMessage.style.display = "none";
     }
 
     function clearEditor() {
@@ -228,6 +232,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (editor) {
             codeEditorElement.classList.add("active");
             noFileMessage.style.display = "none";
+            editor.setOption('readOnly', false);
             editor.refresh();
         }
     }
