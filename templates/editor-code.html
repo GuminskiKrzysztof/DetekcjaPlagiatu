@@ -1,22 +1,48 @@
 {% extends "base.html" %}
+{% set active_page = 'add-project' %}
 {% block title %}Edytuj kod{% endblock %}
 
 {% block content %}
 <div class="center-main">
     <div id="editor-screen">
         <div id="left-panel">
-            <button id="add-file-button">+</button>
+            <div class="file-type-dropdown">
+                <button id="add-file-button">+</button>
+                <div id="file-type-menu" class="dropdown-content">
+                    <button class="file-type-button" data-extension=".py">
+                        <img src="{{ url_for('static', filename='img/python.png') }}" alt="Python" class="language-icon">
+                        Python (.py)
+                    </button>
+                    <button class="file-type-button" data-extension=".cpp">
+                        <img src="{{ url_for('static', filename='img/cpp.png') }}" alt="C++" class="language-icon">
+                        C++ (.cpp)
+                    </button>
+                </div>
+            </div>
             <div id="files-container" class="files">
             </div>
         </div>
 
         <div id="main-editor">
-            <textarea id="code-editor" placeholder="Wpisz kod"></textarea>
+            <div id="code-editor"></div>
+            <div id="no-file-message">Utwórz plik aby rozpocząć edycję</div>
         </div>
 
         <div id="right-panel">
-            <button id="analyze-file-button" class="analyze-button">Analizuj plik</button>
-            <button id="analyze-project-button" class="analyze-button">Analizuj wszystko</button>
+            <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
+            <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+            <div id="loading-indicator" style="display: none;">
+                <p>Analizuję...</p>
+                <img src="{{ url_for('static', filename='img/search.gif') }}" style="width: 115px;">
+                <button id="cancel-analysis" class="cancel-button">Anuluj</button>
+            </div>
+            <div id="analysis-results" style="display: none;">
+                <h3 id="result-title"></h3>
+                <p id="result-similarity"></p>
+                <div id="result-actions">
+                    <button id="close-results" class="cancel-button">Zamknij</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

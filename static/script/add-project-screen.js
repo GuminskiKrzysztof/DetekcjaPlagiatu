@@ -1,5 +1,3 @@
-import { toggleVisibility } from "./utils.js";
-
 // Wait for both DOM and JSZip to be ready
 Promise.all([
     new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve)),
@@ -8,11 +6,12 @@ Promise.all([
         else window.addEventListener('load', resolve);
     })
 ]).then(() => {
-    const MAX_FILES = 10; // Maximum number of files (including files from ZIPs)
-    const MAX_TOTAL_SIZE_MB = 10; // Maximum total size in MB
+    const CONFIG = {
+        MAX_FILES: 10,
+        MAX_TOTAL_SIZE_MB: 10,
+        ALLOWED_EXTENSIONS: ['cpp', 'py', 'zip']
+    };
 
-    const addProjectScreen = document.getElementById("add-project-screen");
-    const editorScreen = document.getElementById("editor-screen");
     const createButton = document.getElementById("create-button");
     const selectFileButton = document.getElementById("select-file-button");
     const fileInput = document.getElementById("file-input");
@@ -21,7 +20,6 @@ Promise.all([
     const dropZone = document.getElementById("drop-zone");
 
     let files = [];
-    let zipFiles = [];
     let totalSize = 0; // Track total size in bytes
 
     function bytesToMB(bytes) {
@@ -29,8 +27,8 @@ Promise.all([
     }
 
     function validateFileSize(file) {
-        if (bytesToMB(totalSize + file.size) > MAX_TOTAL_SIZE_MB) {
-            throw new Error(`Przekroczono maksymalny łączny rozmiar plików (${MAX_TOTAL_SIZE_MB}MB).`);
+        if (bytesToMB(totalSize + file.size) > CONFIG.MAX_TOTAL_SIZE_MB) {
+            throw new Error(`Przekroczono maksymalny łączny rozmiar plików (${CONFIG.MAX_TOTAL_SIZE_MB}MB).`);
         }
         return true;
     }
@@ -52,19 +50,14 @@ Promise.all([
             validateFileSize(zipFile);
             const zip = await JSZip.loadAsync(zipFile);
             
-            let validFiles = [];
-            for (const filename in zip.files) {
-                const file = zip.files[filename];
-                if (!file.dir) {
-                    const extension = filename.split('.').pop().toLowerCase();
-                    if (['cpp', 'py'].includes(extension)) {
-                        validFiles.push(file);
-                    }
-                }
-            }
+            const validFiles = Object.values(zip.files).filter(file => {
+                if (file.dir) return false;
+                const extension = file.name.split('.').pop().toLowerCase();
+                return CONFIG.ALLOWED_EXTENSIONS.includes(extension);
+            });
 
-            if (files.length + validFiles.length > MAX_FILES) {
-                throw new Error(`Przekroczono maksymalną liczbę plików (${MAX_FILES}).`);
+            if (files.length + validFiles.length > CONFIG.MAX_FILES) {
+                throw new Error(`Przekroczono maksymalną liczbę plików (${CONFIG.MAX_FILES}).`);
             }
 
             const zipFiles = []; // Tablica do przechowywania plików z tego ZIP-a
@@ -118,8 +111,8 @@ Promise.all([
         try {
             const fileExtension = file.name.split(".").pop().toLowerCase();
             
-            if (files.length >= MAX_FILES) {
-                throw new Error(`Przekroczono maksymalną liczbę plików (${MAX_FILES}).`);
+            if (files.length >= CONFIG.MAX_FILES) {
+                throw new Error(`Przekroczono maksymalną liczbę plików (${CONFIG.MAX_FILES}).`);
             }
 
             if (fileExtension === 'zip') {
@@ -172,7 +165,7 @@ Promise.all([
 
     function updateFileStats() {
         const statsDiv = document.getElementById('file-stats');
-        statsDiv.textContent = `Pliki: ${files.length}/${MAX_FILES} | Rozmiar: ${bytesToMB(totalSize).toFixed(2)}MB/${MAX_TOTAL_SIZE_MB}MB`;
+        statsDiv.textContent = `Pliki: ${files.length}/${CONFIG.MAX_FILES} | Rozmiar: ${bytesToMB(totalSize).toFixed(2)}MB/${CONFIG.MAX_TOTAL_SIZE_MB}MB`;
     }
 
     function createStatsDiv() {
