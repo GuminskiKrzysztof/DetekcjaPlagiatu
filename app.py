@@ -61,7 +61,9 @@ def edytor():
 
 
 @app.route('/python_information', methods=['POST'])
-def python_information(code):
+def python_information():
+    data = request.get_json()
+    code = data.get('code', '')
     plagiarism = False
     predicted_category = python_service.predict_category(code)
     print(predicted_category)
@@ -85,7 +87,9 @@ def python_information(code):
 
 
 @app.route('/cpp_information', methods=['POST'])
-def cpp_information(code):
+def cpp_information():
+    data = request.get_json()
+    code = data.get('code', '')
     plagiarism = False
     predicted_category = cpp_service.predict_category(code)
     print(predicted_category)
