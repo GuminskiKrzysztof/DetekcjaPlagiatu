@@ -93,7 +93,7 @@ header {
     color: #fff;
 }
 
-.menu li a:not(.active):hover::before {
+.menu li a:not(.active):not(.logo a):hover::before {
     content: "# ";
     color: #fff;
 }
