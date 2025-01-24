@@ -125,6 +125,10 @@ footer {
     margin-top: 20px;
 }
 
+footer a {
+    color: white;
+}
+
 /* Grid container */
 .grid-container {
     position: relative;
