@@ -401,10 +401,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             fileWrapper.dataset.fileName = newName;
             fileNameElement.textContent = newName;
+            fileNameElement.title = newName; 
 
             if (activeFileName === fileWrapper.dataset.fileId) {
-                // Aktualizujemy tylko fileId, nie nazwę
                 fileNameElement.textContent = newName;
+                fileNameElement.title = newName;
             }
 
             fileNameElement.style.display = "block";
