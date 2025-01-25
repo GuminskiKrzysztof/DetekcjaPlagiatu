@@ -518,7 +518,6 @@ footer a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
     font-size: 12px;
 }
 
@@ -724,7 +723,70 @@ footer a {
     color: #eee !important;
 }
 
+/* CodeMirror scrollbar customization */
+.CodeMirror-scrollbar-filler {
+    background-color: transparent;
+}
 
+.CodeMirror-simplescroll-horizontal,
+.CodeMirror-simplescroll-vertical {
+    background: #19185d30;
+    border-radius: 4px;
+}
+
+.CodeMirror-simplescroll-horizontal div,
+.CodeMirror-simplescroll-vertical div {
+    background: #aeff8c50;
+    border-radius: 4px;
+}
+
+.CodeMirror-simplescroll-horizontal div:hover,
+.CodeMirror-simplescroll-vertical div:hover {
+    background: #aeff8c80;
+}
+
+.CodeMirror-overlayscroll-horizontal,
+.CodeMirror-overlayscroll-vertical {
+    background: #19185d30;
+}
+
+.CodeMirror-overlayscroll-horizontal div,
+.CodeMirror-overlayscroll-vertical div {
+    background: #aeff8c50;
+}
+
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+    background: transparent;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-track {
+    background: #19185d30;
+    border-radius: 4px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+    background: #aeff8c50;
+    border-radius: 4px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover {
+    background: #aeff8c80;
+}
+
+/* Ensure CodeMirror takes full height */
+#main-editor .CodeMirror {
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 
 /* Code completion hints */
 .CodeMirror-hints {
