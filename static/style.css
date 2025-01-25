@@ -435,7 +435,7 @@ footer a {
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
-    z-index: 1001;
+    z-index: 2;
 }
 
 #add-file-button:hover {
@@ -879,11 +879,6 @@ li.CodeMirror-hint-active {
     min-height: 50px;
 }
 
-/* Remove redundant modal styles */
-.modal, .modal-content, .file-type-buttons {
-    display: none !important;
-}
-
 /* Loading indicator */
 #loading-indicator {
     text-align: center;
@@ -1011,4 +1006,70 @@ li.CodeMirror-hint-active {
 
 .remove-file:hover {
     background-color: #fb6a66;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: #050510;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #333;
+    width: 80%;
+    max-width: 1000px;
+    position: relative;
+    border-radius: 8px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: #aeff8c;
+    margin: 0;
+}
+
+.close-modal {
+    color: #aeff8c;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #91e076;
+}
+
+#similar-code-editor {
+    height: 60vh;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+#similar-code-editor .CodeMirror {
+    cursor: default !important;
+}
+
+#similar-code-editor .CodeMirror-lines {
+    user-select: text;
+}
+
+#show-similar-code {
+    margin-right: 10px;
 }

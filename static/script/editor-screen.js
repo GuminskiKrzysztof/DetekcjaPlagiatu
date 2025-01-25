@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const codeEditorElement = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
-    const modal = document.getElementById("file-type-modal");
+    const fileTypeModal = document.getElementById("file-type-modal");
     const fileTypeMenu = document.getElementById("file-type-menu");
     const noFileMessage = document.getElementById("no-file-message");
     const loadingIndicator = document.getElementById("loading-indicator");
@@ -57,7 +57,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const resultTitle = document.getElementById("result-title");
     const resultSimilarity = document.getElementById("result-similarity");
     const closeResults = document.getElementById("close-results");
+    const similarCodeModal = document.getElementById("similar-code-modal");
+    const closeModal = document.querySelector(".close-modal");
+    const showSimilarCode = document.getElementById("show-similar-code");
     let currentAnalysis = null;
+    let similarCodeEditor;
+    let matchingCode = '';
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -332,9 +337,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const info = data["Information: "];
                 const isPlagiarism = info[0];
                 const similarity = info[1];
-                const matchingCode = info[2];
+                matchingCode = String(info[2].code || '');
                 
                 showResults(isPlagiarism, similarity);
+                showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
             } else {
                 console.error("Błąd podczas analizy kodu:", response.status, response.statusText);
                 alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
@@ -457,5 +463,33 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     closeResults.addEventListener("click", () => {
         resultsPanel.style.display = 'none';
+    });
+
+    similarCodeEditor = CodeMirror(document.getElementById("similar-code-editor"), {
+        mode: "python",
+        lineNumbers: true,
+        readOnly: true,
+        lineWrapping: true,
+        theme: "default",
+        styleActiveLine: false,
+        cursorBlinkRate: -1,
+        dragDrop: false,
+        showCursorWhenSelecting: false, 
+    });
+
+    showSimilarCode.addEventListener("click", () => {
+        similarCodeModal.style.display = "block";
+        similarCodeEditor.setValue(String(matchingCode || '')); // Ensure string value
+        similarCodeEditor.refresh();
+    });
+
+    closeModal.addEventListener("click", () => {
+        similarCodeModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === similarCodeModal) {
+            similarCodeModal.style.display = "none";
+        }
     });
 });
