@@ -60,8 +60,6 @@ Promise.all([
                 throw new Error(`Przekroczono maksymalną liczbę plików (${CONFIG.MAX_FILES}).`);
             }
 
-            const zipFiles = []; // Tablica do przechowywania plików z tego ZIP-a
-            
             // Extract files immediately
             for (const filename in zip.files) {
                 const file = zip.files[filename];
@@ -73,31 +71,21 @@ Promise.all([
                             id: `file-${Date.now()}-${filename}`,
                             name: filename,
                             content: content,
-                            fromZip: zipFile.name  // Oznaczamy pliki jako pochodzące z tego ZIP-a
+                            fromZip: zipFile.name,
+                            size: file._data.uncompressedSize  // Zapisujemy rozmiar pliku
                         };
                         files.push(fileObject);
-                        zipFiles.push(fileObject.id);
                     }
                 }
             }
 
-            const zipNameDiv = document.createElement("div");
-            zipNameDiv.textContent = zipFile.name;
-            zipNameDiv.classList.add("file-name", "zip-file");
-
-            const removeButton = document.createElement("span");
-            removeButton.innerHTML = "&#10006;";
-            removeButton.classList.add("remove-file");
-            removeButton.onclick = () => {
-                // Usuń wszystkie pliki z tego ZIP-a
-                files = files.filter(f => !f.fromZip || f.fromZip !== zipFile.name);
-                zipNameDiv.remove();
-                totalSize -= zipFile.size;
-                updateFileStats();
-            };
-            
-            zipNameDiv.appendChild(removeButton);
-            fileListDiv.appendChild(zipNameDiv);
+            const zipItem = createFileElement({
+                id: `zip-${Date.now()}`,
+                name: zipFile.name,
+                isZip: true,
+                originalSize: zipFile.size
+            }, zipFile);
+            fileListDiv.appendChild(zipItem);
 
             totalSize += zipFile.size;
             updateFileStats();
@@ -129,26 +117,8 @@ Promise.all([
                     };
                     files.push(fileObject);
                     
-                    const fileNameDiv = document.createElement("div");
-                    fileNameDiv.textContent = file.name;
-                    fileNameDiv.classList.add("file-name");
-                    fileNameDiv.dataset.fileId = fileObject.id;
-                    
-                    const removeButton = document.createElement("span");
-                    removeButton.innerHTML = "&#10006;";
-                    removeButton.classList.add("remove-file");
-                    removeButton.onclick = () => {
-                        const fileIndex = files.findIndex(f => f.id === fileObject.id);
-                        if (fileIndex !== -1) {
-                            totalSize -= file.size;
-                            files.splice(fileIndex, 1);
-                            fileNameDiv.remove();
-                            updateFileStats();
-                        }
-                    };
-                    
-                    fileNameDiv.appendChild(removeButton);
-                    fileListDiv.appendChild(fileNameDiv);
+                    const fileItem = createFileElement(fileObject, file);
+                    fileListDiv.appendChild(fileItem);
 
                     totalSize += file.size;
                     updateFileStats();
@@ -171,10 +141,67 @@ Promise.all([
     function createStatsDiv() {
         const statsDiv = document.createElement('div');
         statsDiv.id = 'file-stats';
-        statsDiv.style.marginTop = '10px';
         statsDiv.style.color = '#aeff8c';
-        fileListDiv.parentNode.insertBefore(statsDiv, fileListDiv);
+        // Insert at the bottom of drop-zone instead of before fileListDiv
+        dropZone.appendChild(statsDiv);
         return statsDiv;
+    }
+
+    function getFileIcon(extension) {
+        switch (extension.toLowerCase()) {
+            case 'cpp':
+                return '/static/img/file_cpp.png';
+            case 'py':
+                return '/static/img/file_python.png';
+            case 'zip':
+                return '/static/img/file_zip.png';
+            default:
+                return '/static/img/file_cpp.png';
+        }
+    }
+
+    function createFileElement(fileObject, originalFile) {
+        const fileExtension = fileObject.name.split('.').pop().toLowerCase();
+        const fileItem = document.createElement('div');
+        fileItem.classList.add('file-item');
+        fileItem.dataset.fileId = fileObject.id;
+
+        const icon = document.createElement('img');
+        icon.src = getFileIcon(fileExtension);
+        icon.classList.add('file-icon');
+        
+        const fileName = document.createElement('div');
+        fileName.classList.add('file-name');
+        fileName.textContent = fileObject.name;
+
+        const removeButton = document.createElement('div');
+        removeButton.classList.add('remove-file');
+        removeButton.innerHTML = '×';
+        removeButton.onclick = () => {
+            if (fileObject.isZip) {
+                // Jeśli to plik ZIP, usuń wszystkie pliki z tego ZIP-a
+                files = files.filter(f => !f.fromZip || f.fromZip !== fileObject.name);
+                totalSize -= fileObject.originalSize;
+            } else {
+                const fileIndex = files.findIndex(f => f.id === fileObject.id);
+                if (fileIndex !== -1) {
+                    if (originalFile) {
+                        totalSize -= originalFile.size;
+                    } else if (fileObject.size) {
+                        totalSize -= fileObject.size;
+                    }
+                    files.splice(fileIndex, 1);
+                }
+            }
+            fileItem.remove();
+            updateFileStats();
+        };
+
+        fileItem.appendChild(icon);
+        fileItem.appendChild(fileName);
+        fileItem.appendChild(removeButton);
+        
+        return fileItem;
     }
 
     fileInput.addEventListener("change", function(event) {
