@@ -181,6 +181,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         fileWrapper.dataset.fileId = fileId;
         fileWrapper.dataset.fileName = fileName;
 
+        const statusIcon = document.createElement("div");
+        statusIcon.classList.add("status-icon");
+        
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
         fileNameElement.title = fileName;
@@ -213,6 +216,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
 
         
+        fileWrapper.appendChild(statusIcon);
         fileWrapper.appendChild(fileNameElement);
         fileWrapper.appendChild(editIcon);
         fileWrapper.appendChild(deleteIcon);
@@ -338,6 +342,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const isPlagiarism = info[0];
                 const similarity = info[1];
                 matchingCode = String(info[2].code || '');
+                
+                const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
+                const statusIcon = fileWrapper.querySelector('.status-icon');
+                statusIcon.classList.remove('plagiarism', 'clean');
+                statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
                 
                 showResults(isPlagiarism, similarity);
                 showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';

@@ -1082,3 +1082,21 @@ li.CodeMirror-hint-active {
 #next-button.disabled:hover {
     background-color: #aeff8c50;
 }
+
+.file-wrapper .status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: none;
+}
+
+.file-wrapper .status-icon.plagiarism {
+    display: block;
+    background-color: #fb6a66;
+}
+
+.file-wrapper .status-icon.clean {
+    display: block;
+    background-color: #aeff8c;
+}
