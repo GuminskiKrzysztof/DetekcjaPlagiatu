@@ -178,6 +178,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
+        fileNameElement.title = fileName;
 
         fileNameElement.addEventListener("click", () => {
             setActiveFile(fileWrapper.dataset.fileId);
