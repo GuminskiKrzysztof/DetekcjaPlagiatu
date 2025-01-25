@@ -89,6 +89,7 @@ Promise.all([
 
             totalSize += zipFile.size;
             updateFileStats();
+            updateNextButtonState();
         } catch (error) {
             alert(error.message || "Błąd podczas przetwarzania pliku ZIP.");
             console.error(error);
@@ -122,6 +123,7 @@ Promise.all([
 
                     totalSize += file.size;
                     updateFileStats();
+                    updateNextButtonState();
                 };
                 reader.readAsText(file);
             } else {
@@ -195,6 +197,7 @@ Promise.all([
             }
             fileItem.remove();
             updateFileStats();
+            updateNextButtonState();
         };
 
         fileItem.appendChild(icon);
@@ -243,5 +246,15 @@ Promise.all([
             handleFile(file);
         });
     });
+
+    nextButton.classList.add('disabled');
+
+    function updateNextButtonState() {
+        if (files.length > 0) {
+            nextButton.classList.remove('disabled');
+        } else {
+            nextButton.classList.add('disabled');
+        }
+    }
 
 });

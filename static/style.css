@@ -1073,3 +1073,12 @@ li.CodeMirror-hint-active {
 #show-similar-code {
     margin-right: 10px;
 }
+
+#next-button.disabled {
+    background-color: #aeff8c50;
+    cursor: default;
+}
+
+#next-button.disabled:hover {
+    background-color: #aeff8c50;
+}
