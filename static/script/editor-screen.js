@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     let currentAnalysis = null;
     let similarCodeEditor;
     let matchingCode = '';
+    let analysisResults = new Map();
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -252,6 +253,15 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         codeEditorElement.classList.add("active");
         noFileMessage.style.display = "none";
+
+        if (analysisResults.has(fileId)) {
+            const result = analysisResults.get(fileId);
+            showResults(result.isPlagiarism, result.similarity);
+            matchingCode = result.matchingCode;
+            showSimilarCode.style.display = result.isPlagiarism ? 'inline-block' : 'none';
+        } else {
+            resultsPanel.style.display = 'none';
+        }
     }
 
     function clearEditor() {
@@ -366,8 +376,73 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    analyzeProjectButton.addEventListener("click", function() {
-        alert("Analiza całego projektu w przygotowaniu...");
+    analyzeProjectButton.addEventListener("click", async function() {
+        const files = Array.from(filesContainer.querySelectorAll('.file-wrapper'));
+        if (files.length === 0) {
+            alert("Brak plików do analizy.");
+            return;
+        }
+
+        try {
+            showLoading();
+            const controller = new AbortController();
+            currentAnalysis = controller;
+
+            for (const file of files) {
+                const fileId = file.dataset.fileId;
+                const fileName = file.dataset.fileName;
+                const code = fileCodes.get(fileId);
+                const extension = fileName.split('.').pop().toLowerCase();
+                
+                let endpoint = extension === 'py' ? '/python_information' : '/cpp_information';
+
+                if (!code.trim() || !['py', 'cpp'].includes(extension)) {
+                    continue;
+                }
+
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    body: JSON.stringify({ code: code }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    signal: controller.signal
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const info = data["Information: "];
+                    const isPlagiarism = info[0];
+                    const similarity = info[1];
+                    const matchingCode = String(info[2].code || '');
+
+                    // Store results
+                    analysisResults.set(fileId, {
+                        isPlagiarism,
+                        similarity,
+                        matchingCode
+                    });
+
+                    const statusIcon = file.querySelector('.status-icon');
+                    statusIcon.classList.remove('plagiarism', 'clean');
+                    statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
+                    
+                    if (fileId === activeFileName) {
+                        showResults(isPlagiarism, similarity);
+                        showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+                    }
+                }
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Analiza została anulowana');
+            } else {
+                console.error("Błąd podczas analizy projektu:", error);
+                alert("Wystąpił błąd podczas analizy projektu. Spróbuj ponownie.");
+            }
+        } finally {
+            hideLoading();
+        }
     });
 
     function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
@@ -468,6 +543,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Nie wykryto plagiatu';
         
         resultSimilarity.textContent = `Podobieństwo: ${(similarity * 100).toFixed(2)}%`;
+
+        if (activeFileName) {
+            analysisResults.set(activeFileName, {
+                isPlagiarism,
+                similarity,
+                matchingCode: matchingCode
+            });
+        }
     }
 
     closeResults.addEventListener("click", () => {
