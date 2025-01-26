@@ -93,7 +93,7 @@ header {
     color: #fff;
 }
 
-.menu li a:not(.active):hover::before {
+.menu li a:not(.active):not(.logo a):hover::before {
     content: "# ";
     color: #fff;
 }
@@ -123,6 +123,10 @@ footer {
     text-align: center;
     padding: 10px;
     margin-top: 20px;
+}
+
+footer a {
+    color: white;
 }
 
 /* Grid container */
@@ -312,7 +316,8 @@ footer {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 78vh;
+    min-height: 78vh;
+    height: 100%;
     flex-direction: column;
 }
 
@@ -322,7 +327,8 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: auto;
+    min-height: 100%;
     width: 80vw;
     background: #00000050;
     padding: 20px;
@@ -333,11 +339,33 @@ footer {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
+}
+
+/* Drop zone */
+#drop-zone {
+    min-height: 400px;
+    height: auto;
+    flex: 1;
+    border: 2px dashed #aeff8c50;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+/* Buttons container */
+#add-project-screen .buttons-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
 }
 
 #add-project-screen button {
-    font-size: 24px;
+    font-size: 20px;
     padding: 15px 30px;
     background-color: #aeff8c;
     border: none;
@@ -346,6 +374,7 @@ footer {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
+    flex: 1;
 }
 
 #add-project-screen button:hover {
@@ -358,6 +387,7 @@ footer {
     height: 100%;
     width: 90%;
     background-color: #050510;
+    min-height: 600px;
 }
 
 /* Left and right panels */
@@ -405,7 +435,7 @@ footer {
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
-    z-index: 1001;
+    z-index: 2;
 }
 
 #add-file-button:hover {
@@ -485,6 +515,18 @@ footer {
     margin: 0;
     flex-grow: 1;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+
+.file-wrapper p:hover {
+    position: relative;
+}
+
+.file-wrapper p[title] {
+    text-decoration: none;
 }
 
 /* File icons */
@@ -550,12 +592,14 @@ footer {
     align-items: center;
     padding: 20px;
     position: relative;
+    min-height: 100%;
 }
 
 #code-editor {
     width: 100%;
     height: 100%;
     display: none; 
+    min-height: 100%;
 }
 
 #no-file-message {
@@ -564,6 +608,7 @@ footer {
     font-size: 1.2em;
     text-align: center;
     user-select: none;
+    z-index: 1;
 }
 
 #code-editor.active {
@@ -596,6 +641,7 @@ footer {
 .CodeMirror {
     width: 100%;
     height: 100% !important;
+    min-height: 100% !important;
     font-family: 'Source Code Pro', Consolas, monospace;
     font-size: 14px;
     background-color: transparent !important;
@@ -677,7 +723,70 @@ footer {
     color: #eee !important;
 }
 
+/* CodeMirror scrollbar customization */
+.CodeMirror-scrollbar-filler {
+    background-color: transparent;
+}
 
+.CodeMirror-simplescroll-horizontal,
+.CodeMirror-simplescroll-vertical {
+    background: #19185d30;
+    border-radius: 4px;
+}
+
+.CodeMirror-simplescroll-horizontal div,
+.CodeMirror-simplescroll-vertical div {
+    background: #aeff8c50;
+    border-radius: 4px;
+}
+
+.CodeMirror-simplescroll-horizontal div:hover,
+.CodeMirror-simplescroll-vertical div:hover {
+    background: #aeff8c80;
+}
+
+.CodeMirror-overlayscroll-horizontal,
+.CodeMirror-overlayscroll-vertical {
+    background: #19185d30;
+}
+
+.CodeMirror-overlayscroll-horizontal div,
+.CodeMirror-overlayscroll-vertical div {
+    background: #aeff8c50;
+}
+
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+    background: transparent;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-track {
+    background: #19185d30;
+    border-radius: 4px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+    background: #aeff8c50;
+    border-radius: 4px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover {
+    background: #aeff8c80;
+}
+
+/* Ensure CodeMirror takes full height */
+#main-editor .CodeMirror {
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 
 /* Code completion hints */
 .CodeMirror-hints {
@@ -734,11 +843,16 @@ li.CodeMirror-hint-active {
     padding: 8px;
     border-radius: 4px;
     margin-bottom: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+    text-align: center;
 }
 
 /* Drop zone */
 #drop-zone {
-    min-height: 200px;
+    min-height: 400px;
+    height: auto;
+    flex: 1;
     border: 2px dashed #aeff8c50;
     border-radius: 10px;
     padding: 40px;
@@ -763,11 +877,6 @@ li.CodeMirror-hint-active {
 #file-list {
     flex-grow: 1;
     min-height: 50px;
-}
-
-/* Remove redundant modal styles */
-.modal, .modal-content, .file-type-buttons {
-    display: none !important;
 }
 
 /* Loading indicator */
@@ -826,4 +935,169 @@ li.CodeMirror-hint-active {
 
 #result-actions {
     margin-top: 15px;
+}
+
+/* File grid layout */
+#file-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+}
+
+.file-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s;
+    height: 130px;
+    justify-content: flex-start;
+}
+
+.file-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.file-name {
+    text-align: center;
+    word-break: break-word;
+    font-size: 14px;
+    max-width: 100%;
+    max-height: 2.8em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+}
+
+.remove-file {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: #fff;
+}
+
+.file-item:hover .remove-file {
+    opacity: 1;
+}
+
+.remove-file:hover {
+    background-color: #fb6a66;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: #050510;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #333;
+    width: 80%;
+    max-width: 1000px;
+    position: relative;
+    border-radius: 8px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: #aeff8c;
+    margin: 0;
+}
+
+.close-modal {
+    color: #aeff8c;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #91e076;
+}
+
+#similar-code-editor {
+    height: 60vh;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+#similar-code-editor .CodeMirror {
+    cursor: default !important;
+}
+
+#similar-code-editor .CodeMirror-lines {
+    user-select: text;
+}
+
+#show-similar-code {
+    margin-right: 10px;
+}
+
+#next-button.disabled {
+    background-color: #aeff8c50;
+    cursor: default;
+}
+
+#next-button.disabled:hover {
+    background-color: #aeff8c50;
+}
+
+.file-wrapper .status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: none;
+}
+
+.file-wrapper .status-icon.plagiarism {
+    display: block;
+    background-color: #fb6a66;
+}
+
+.file-wrapper .status-icon.clean {
+    display: block;
+    background-color: #aeff8c;
 }
