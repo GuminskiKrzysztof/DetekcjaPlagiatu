@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from pydantic import BaseModel, ValidationError
 
 app = Flask(__name__)
 
-from flask import Flask, render_template, request, jsonify
+
 from backend.services import CodeCategorizationService
 import sys
 import os
