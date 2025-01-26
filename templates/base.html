@@ -37,8 +37,10 @@
                             </a>
                         </li>
                         <li class="logo">
-                            <p class="first-line">Czyj to</p>
-                            <p class="second-line">kod?</p>
+                            <a href="{{ url_for('home') }}" style="color: white;">
+                                <p class="first-line">Czyj to</p>
+                                <p class="second-line">kod?</p>
+                            </a>
                         </li>
                         <li>
                             <a href="{{ url_for('dodaj_projekt') }}" class="{{ 'active' if active_page == 'add-project' else '' }}">

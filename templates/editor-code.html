@@ -40,9 +40,19 @@
                 <h3 id="result-title"></h3>
                 <p id="result-similarity"></p>
                 <div id="result-actions">
+                    <button id="show-similar-code" class="analyze-button">Pokaż najbardziej podobny kod</button>
                     <button id="close-results" class="cancel-button">Zamknij</button>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="similar-code-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Najbardziej podobny kod</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div id="similar-code-editor"></div>
         </div>
     </div>
 </div>

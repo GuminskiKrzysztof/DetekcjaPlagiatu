@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const codeEditorElement = document.getElementById("code-editor");
     const analyzeFileButton = document.getElementById("analyze-file-button");
     const analyzeProjectButton = document.getElementById("analyze-project-button");
-    const modal = document.getElementById("file-type-modal");
+    const fileTypeModal = document.getElementById("file-type-modal");
     const fileTypeMenu = document.getElementById("file-type-menu");
     const noFileMessage = document.getElementById("no-file-message");
     const loadingIndicator = document.getElementById("loading-indicator");
@@ -57,7 +57,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     const resultTitle = document.getElementById("result-title");
     const resultSimilarity = document.getElementById("result-similarity");
     const closeResults = document.getElementById("close-results");
+    const similarCodeModal = document.getElementById("similar-code-modal");
+    const closeModal = document.querySelector(".close-modal");
+    const showSimilarCode = document.getElementById("show-similar-code");
     let currentAnalysis = null;
+    let similarCodeEditor;
+    let matchingCode = '';
+    let analysisResults = new Map();
 
     const fileCodes = new Map();
     let activeFileName = null;
@@ -176,8 +182,12 @@ document.addEventListener("DOMContentLoaded", async function() {
         fileWrapper.dataset.fileId = fileId;
         fileWrapper.dataset.fileName = fileName;
 
+        const statusIcon = document.createElement("div");
+        statusIcon.classList.add("status-icon");
+        
         const fileNameElement = document.createElement("p");
         fileNameElement.textContent = fileName;
+        fileNameElement.title = fileName;
 
         fileNameElement.addEventListener("click", () => {
             setActiveFile(fileWrapper.dataset.fileId);
@@ -207,6 +217,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
 
         
+        fileWrapper.appendChild(statusIcon);
         fileWrapper.appendChild(fileNameElement);
         fileWrapper.appendChild(editIcon);
         fileWrapper.appendChild(deleteIcon);
@@ -242,6 +253,15 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         codeEditorElement.classList.add("active");
         noFileMessage.style.display = "none";
+
+        if (analysisResults.has(fileId)) {
+            const result = analysisResults.get(fileId);
+            showResults(result.isPlagiarism, result.similarity);
+            showSimilarCode.style.display = result.isPlagiarism ? 'inline-block' : 'none';
+        } else {
+            resultsPanel.style.display = 'none';
+            showSimilarCode.style.display = 'none';
+        }
     }
 
     function clearEditor() {
@@ -331,9 +351,21 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const info = data["Information: "];
                 const isPlagiarism = info[0];
                 const similarity = info[1];
-                const matchingCode = info[2];
+                const currentMatchingCode = String(info[2].code || '');
                 
+                const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
+                const statusIcon = fileWrapper.querySelector('.status-icon');
+                statusIcon.classList.remove('plagiarism', 'clean');
+                statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
+                
+                analysisResults.set(activeFileName, {
+                    isPlagiarism,
+                    similarity,
+                    matchingCode: currentMatchingCode
+                });
+
                 showResults(isPlagiarism, similarity);
+                showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
             } else {
                 console.error("Błąd podczas analizy kodu:", response.status, response.statusText);
                 alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
@@ -350,8 +382,72 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    analyzeProjectButton.addEventListener("click", function() {
-        alert("Analiza całego projektu w przygotowaniu...");
+    analyzeProjectButton.addEventListener("click", async function() {
+        const files = Array.from(filesContainer.querySelectorAll('.file-wrapper'));
+        if (files.length === 0) {
+            alert("Brak plików do analizy.");
+            return;
+        }
+
+        try {
+            showLoading();
+            const controller = new AbortController();
+            currentAnalysis = controller;
+
+            for (const file of files) {
+                const fileId = file.dataset.fileId;
+                const fileName = file.dataset.fileName;
+                const code = fileCodes.get(fileId);
+                const extension = fileName.split('.').pop().toLowerCase();
+                
+                let endpoint = extension === 'py' ? '/python_information' : '/cpp_information';
+
+                if (!code.trim() || !['py', 'cpp'].includes(extension)) {
+                    continue;
+                }
+
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    body: JSON.stringify({ code: code }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    signal: controller.signal
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const info = data["Information: "];
+                    const isPlagiarism = info[0];
+                    const similarity = info[1];
+                    const currentMatchingCode = String(info[2].code || '');
+
+                    analysisResults.set(fileId, {
+                        isPlagiarism,
+                        similarity,
+                        matchingCode: currentMatchingCode
+                    });
+
+                    const statusIcon = file.querySelector('.status-icon');
+                    statusIcon.classList.remove('plagiarism', 'clean');
+                    statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
+                    
+                    if (fileId === activeFileName) {
+                        showResults(isPlagiarism, similarity);
+                        showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+                    }
+                }
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Analiza została anulowana');
+            } else {
+                console.error("Błąd podczas analizy projektu:", error);
+                alert("Wystąpił błąd podczas analizy projektu. Spróbuj ponownie.");
+            }
+        } finally {
+            hideLoading();
+        }
     });
 
     function enableFilenameEditing(fileWrapper, fileNameElement, editIcon, deleteIcon) {
@@ -400,10 +496,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             fileWrapper.dataset.fileName = newName;
             fileNameElement.textContent = newName;
+            fileNameElement.title = newName; 
 
             if (activeFileName === fileWrapper.dataset.fileId) {
-                // Aktualizujemy tylko fileId, nie nazwę
                 fileNameElement.textContent = newName;
+                fileNameElement.title = newName;
             }
 
             fileNameElement.style.display = "block";
@@ -455,5 +552,41 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     closeResults.addEventListener("click", () => {
         resultsPanel.style.display = 'none';
+    });
+
+    similarCodeEditor = CodeMirror(document.getElementById("similar-code-editor"), {
+        mode: "python",
+        lineNumbers: true,
+        readOnly: true,
+        lineWrapping: true,
+        theme: "default",
+        styleActiveLine: false,
+        cursorBlinkRate: -1,
+        dragDrop: false,
+        showCursorWhenSelecting: false, 
+    });
+
+    showSimilarCode.addEventListener("click", () => {
+        if (activeFileName && analysisResults.has(activeFileName)) {
+            similarCodeModal.style.display = "block";
+            const result = analysisResults.get(activeFileName);
+            if (result && result.matchingCode) {
+                similarCodeEditor.setValue(result.matchingCode);
+                similarCodeEditor.setOption('mode', editor.getOption('mode'))
+                similarCodeEditor.refresh();
+            } else {
+                similarCodeEditor.setValue('Brak podobnego kodu do wyświetlenia');
+            }
+        }
+    });
+
+    closeModal.addEventListener("click", () => {
+        similarCodeModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === similarCodeModal) {
+            similarCodeModal.style.display = "none";
+        }
     });
 });
