@@ -257,10 +257,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (analysisResults.has(fileId)) {
             const result = analysisResults.get(fileId);
             showResults(result.isPlagiarism, result.similarity);
-            matchingCode = result.matchingCode;
             showSimilarCode.style.display = result.isPlagiarism ? 'inline-block' : 'none';
         } else {
             resultsPanel.style.display = 'none';
+            showSimilarCode.style.display = 'none';
         }
     }
 
@@ -351,13 +351,19 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const info = data["Information: "];
                 const isPlagiarism = info[0];
                 const similarity = info[1];
-                matchingCode = String(info[2].code || '');
+                const currentMatchingCode = String(info[2].code || '');
                 
                 const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
                 const statusIcon = fileWrapper.querySelector('.status-icon');
                 statusIcon.classList.remove('plagiarism', 'clean');
                 statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
                 
+                analysisResults.set(activeFileName, {
+                    isPlagiarism,
+                    similarity,
+                    matchingCode: currentMatchingCode
+                });
+
                 showResults(isPlagiarism, similarity);
                 showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
             } else {
@@ -414,13 +420,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                     const info = data["Information: "];
                     const isPlagiarism = info[0];
                     const similarity = info[1];
-                    const matchingCode = String(info[2].code || '');
+                    const currentMatchingCode = String(info[2].code || '');
 
-                    // Store results
                     analysisResults.set(fileId, {
                         isPlagiarism,
                         similarity,
-                        matchingCode
+                        matchingCode: currentMatchingCode
                     });
 
                     const statusIcon = file.querySelector('.status-icon');
@@ -543,14 +548,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Nie wykryto plagiatu';
         
         resultSimilarity.textContent = `Podobieństwo: ${(similarity * 100).toFixed(2)}%`;
-
-        if (activeFileName) {
-            analysisResults.set(activeFileName, {
-                isPlagiarism,
-                similarity,
-                matchingCode: matchingCode
-            });
-        }
     }
 
     closeResults.addEventListener("click", () => {
@@ -570,9 +567,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 
     showSimilarCode.addEventListener("click", () => {
-        similarCodeModal.style.display = "block";
-        similarCodeEditor.setValue(String(matchingCode || '')); // Ensure string value
-        similarCodeEditor.refresh();
+        if (activeFileName && analysisResults.has(activeFileName)) {
+            similarCodeModal.style.display = "block";
+            const result = analysisResults.get(activeFileName);
+            if (result && result.matchingCode) {
+                similarCodeEditor.setValue(result.matchingCode);
+                similarCodeEditor.setOption('mode', editor.getOption('mode'))
+                similarCodeEditor.refresh();
+            } else {
+                similarCodeEditor.setValue('Brak podobnego kodu do wyświetlenia');
+            }
+        }
     });
 
     closeModal.addEventListener("click", () => {
