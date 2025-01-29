@@ -1,7 +1,8 @@
-__pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 .vscode/
+.idea/
 .DS_Store
 env/
 backend/models/c_code_classification/
