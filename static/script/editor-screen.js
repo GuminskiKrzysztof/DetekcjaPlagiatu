@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     const resultsPanel = document.getElementById("analysis-results");
     const resultTitle = document.getElementById("result-title");
     const resultSimilarity = document.getElementById("result-similarity");
-    const closeResults = document.getElementById("close-results");
     const similarCodeModal = document.getElementById("similar-code-modal");
     const closeModal = document.querySelector(".close-modal");
     const showSimilarCode = document.getElementById("show-similar-code");
@@ -552,10 +551,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         resultSimilarity.textContent = `Podobieństwo: ${(similarity * 100).toFixed(2)}%`;
     }
-
-    closeResults.addEventListener("click", () => {
-        resultsPanel.style.display = 'none';
-    });
 
     similarCodeEditor = CodeMirror(document.getElementById("similar-code-editor"), {
         mode: "python",
