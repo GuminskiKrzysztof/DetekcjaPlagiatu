@@ -321,6 +321,13 @@ footer a {
     flex-direction: column;
 }
 
+/* Introductory paragraph */
+.center-main h1 {
+    font-size: 18px;
+    margin: 30px 0;
+    text-align: center;
+}
+
 /* Add project screen */
 #add-project-screen {
     display: flex;
