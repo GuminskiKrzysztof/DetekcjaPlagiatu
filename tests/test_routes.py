@@ -30,7 +30,7 @@ def test_edytor_route(client):
 
 def test_python_information(client):
     sample_code = "def sample_function():\n    return 'hello'"
-    response = client.post('/python_information', json={"code": sample_code})
+    response = client.post('/api/python_information', json={"code": sample_code})
     assert response.status_code == 200
     data = response.get_json()
     assert "Information: " in data
@@ -38,7 +38,7 @@ def test_python_information(client):
 
 def test_cpp_information(client):
     sample_code = "#include <iostream>\nusing namespace std;\nint main() { cout << 'Hello'; return 0; }"
-    response = client.post('/cpp_information', json={"code": sample_code})
+    response = client.post('/api/cpp_information', json={"code": sample_code})
     assert response.status_code == 200
     data = response.get_json()
     assert "Information: " in data
