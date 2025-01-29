@@ -321,14 +321,19 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
+        if (!fileWrapper) {
+            alert("Nie wybrano pliku do analizy.");
+            return;
+        }
+
         const fileName = fileWrapper.dataset.fileName;
         const extension = fileName.split('.').pop().toLowerCase();
         let endpoint;
         
         if (extension === 'py') {
-            endpoint = '/python_information';
+            endpoint = '/api/python_information';
         } else if (extension === 'cpp') {
-            endpoint = '/cpp_information';
+            endpoint = '/api/cpp_information';
         } else {
             alert("Nieobsługiwane rozszerzenie pliku.");
             return;
@@ -347,37 +352,47 @@ document.addEventListener("DOMContentLoaded", async function() {
                 },
                 signal: controller.signal
             });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const info = data["Information: "];
-                const isPlagiarism = info[0];
-                const similarity = info[1];
-                const currentMatchingCode = String(info[2].code || '');
-                
-                const fileWrapper = filesContainer.querySelector(`[data-file-id="${activeFileName}"]`);
-                const statusIcon = fileWrapper.querySelector('.status-icon');
-                statusIcon.classList.remove('plagiarism', 'clean');
-                statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
-                
-                analysisResults.set(activeFileName, {
-                    isPlagiarism,
-                    similarity,
-                    matchingCode: currentMatchingCode
-                });
 
-                showResults(isPlagiarism, similarity);
-                showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+            let data;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                data = await response.json();
             } else {
-                console.error("Błąd podczas analizy kodu:", response.status, response.statusText);
-                alert("Wystąpił błąd podczas analizy kodu. Spróbuj ponownie.");
+                throw new Error("Serwer zwrócił nieprawidłową odpowiedź");
             }
+            
+            if (!response.ok) {
+                throw new Error(data.error || `Błąd HTTP: ${response.status}`);
+            }
+            
+            if (!data["Information: "]) {
+                throw new Error("Nieprawidłowa odpowiedź z serwera");
+            }
+
+            const info = data["Information: "];
+            const isPlagiarism = info[0];
+            const similarity = info[1];
+            const currentMatchingCode = String(info[2]?.code || '');
+            
+            const statusIcon = fileWrapper.querySelector('.status-icon');
+            statusIcon.classList.remove('plagiarism', 'clean');
+            statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
+            
+            analysisResults.set(activeFileName, {
+                isPlagiarism,
+                similarity,
+                matchingCode: currentMatchingCode
+            });
+
+            showResults(isPlagiarism, similarity);
+            showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+            
         } catch (error) {
             if (error.name === 'AbortError') {
                 console.log('Analiza została anulowana');
             } else {
-                console.error("Błąd podczas wysyłania żądania:", error);
-                alert("Nie udało się połączyć z serwerem.");
+                console.error("Błąd podczas analizy:", error);
+                alert(`Błąd podczas analizy: ${error.message}`);
             }
         } finally {
             hideLoading();
@@ -402,7 +417,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const code = fileCodes.get(fileId);
                 const extension = fileName.split('.').pop().toLowerCase();
                 
-                let endpoint = extension === 'py' ? '/python_information' : '/cpp_information';
+                let endpoint = extension === 'py' ? '/api/python_information' : '/api/cpp_information';
 
                 if (!code.trim() || !['py', 'cpp'].includes(extension)) {
                     continue;
