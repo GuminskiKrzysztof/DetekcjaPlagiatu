@@ -1184,3 +1184,52 @@ li.CodeMirror-hint-active {
     text-align: center;
     white-space: nowrap;
 }
+
+/* Team members section */
+.team-members {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-member img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border: 3px solid #aeff8c;
+}
+
+.team-member h3 {
+    color: #aeff8c;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.team-member p {
+    color: #fff;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 16px;
+}
