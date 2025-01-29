@@ -27,29 +27,29 @@
                 <nav>
                     <ul class="menu">
                         <li>
-                            <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">
+                            <a href="{{ url_for('project.home') }}" class="{{ 'active' if active_page == 'home' else '' }}">
                                 {{ '# ' if active_page == 'home' else '' }}Strona główna
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('jak_to_dziala') }}" class="{{ 'active' if active_page == 'how-it-works'}}">
+                            <a href="{{ url_for('project.jak_to_dziala') }}" class="{{ 'active' if active_page == 'how-it-works'}}">
                                 {{ '# ' if active_page == 'how-it-works' else '' }}Jak to działa?
                             </a>
                         </li>
                         <li class="logo">
-                            <a href="{{ url_for('home') }}" style="color: white;">
+                            <a href="{{ url_for('project.home') }}" style="color: white;">
                                 <p class="first-line">Czyj to</p>
                                 <p class="second-line">kod?</p>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('dodaj_projekt') }}" class="{{ 'active' if active_page == 'add-project' else '' }}">
+                            <a href="{{ url_for('project.dodaj_projekt') }}" class="{{ 'active' if active_page == 'add-project' else '' }}">
                                 {{ '# ' if active_page == 'add-project' else '' }}Analizuj kod
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('o_nas') }}" class="{{ 'active' if active_page == 'about-us' else '' }}">{{ '# ' if active_page == 'about-us' else '' }}O nas
-
+                            <a href="{{ url_for('project.o_nas') }}" class="{{ 'active' if active_page == 'about-us' else '' }}">
+                                {{ '# ' if active_page == 'about-us' else '' }}O nas
                             </a>
                         </li>
                     </ul>
