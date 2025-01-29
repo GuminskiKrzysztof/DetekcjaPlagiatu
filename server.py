@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 from pydantic import BaseModel, ValidationError
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder='view/templates',
+            static_folder='view/static')
 
 
-from backend.services import CodeCategorizationService
+from model.services import CodeCategorizationService
 import sys
 import os
 import pandas as pd
@@ -13,7 +15,7 @@ import pandas as pd
 sys.path.append(os.path.abspath('../code_similarities'))
 
 # Teraz możesz zaimportować funkcje z code_similarities.py
-from code_similarities.similarity import *
+from model.code_similarities.similarity import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -21,13 +23,13 @@ warnings.filterwarnings('ignore')
 
 #Inicjalizacja usług
 python_service = CodeCategorizationService(
-    model_path="backend/models/trained_model",
-    csv_path="backend/data/all_python_codes.csv"
+    model_path="model/models_ai/trained_model",
+    csv_path="model/data/all_python_codes.csv"
 )
 
 cpp_service = CodeCategorizationService(
-    model_path="backend/models/c_code_classification",
-    csv_path="backend/data/all_cpp_codes.csv"
+    model_path="model/models_ai/c_code_classification",
+    csv_path="model/data/all_cpp_codes.csv"
 )
 
 class TextInput(BaseModel):

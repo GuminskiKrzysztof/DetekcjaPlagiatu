@@ -105,13 +105,13 @@ def process_kaggle_projects(project_urls, base_path, output_csv_path):
 
 
 # Ścieżka do katalogu zawierającego plik
-base_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu"  # Zmień na rzeczywistą ścieżkę
+base_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu" 
 
 # Lista URL projektów Kaggle
 project_urls = get_urls()
 
 # Ścieżka wyjściowego pliku CSV
-output_csv_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu/all_python_codes.csv"  # Zmień na rzeczywistą ścieżkę
+output_csv_path = "C:/Users/k.guminski/PycharmProjects/plagiatDet/DetekcjaPlagiatu/all_python_codes.csv" 
 
 # Uruchom proces
 process_kaggle_projects(project_urls, base_path, output_csv_path)

@@ -1,12 +1,12 @@
 import pytest
-from backend.services import CodeCategorizationService
+from model.services import CodeCategorizationService
 import warnings
 warnings.filterwarnings('ignore')
 @pytest.fixture
 def python_service():
     return CodeCategorizationService(
-        model_path="backend/models/trained_model",
-        csv_path="backend/data/all_python_codes.csv"
+        model_path="model/models_ai/trained_model",
+        csv_path="model/data/all_python_codes.csv"
     )
 
 

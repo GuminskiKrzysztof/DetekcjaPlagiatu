@@ -7,16 +7,16 @@ import pandas as pd
 sys.path.append(os.path.abspath('../code_similarities'))
 
 # Teraz możesz zaimportować funkcje z code_similarities.py
-from code_similarities.similarity import *
+from model.code_similarities.similarity import *
 
 python_service = CodeCategorizationService(
-    model_path="backend/models/trained_model",
-    csv_path="backend/data/all_python_codes.csv"
+    model_path="model/models_ai/trained_model",
+    csv_path="model/data/all_python_codes.csv"
 )
 
 cpp_service = CodeCategorizationService(
-    model_path="backend/models/c_code_classification",
-    csv_path="backend/data/all_cpp_codes.csv"
+    model_path="model/models_ai/c_code_classification",
+    csv_path="model/data/all_cpp_codes.csv"
 )
 
 
@@ -29,7 +29,7 @@ cpp_service = CodeCategorizationService(
 #def search_codes_python():
 #    category = data.get("category", "")
 #    # matching_codes = python_service.search_codes_by_category(category)
-#    return jsonify({"Codes": pd.read_csv("backend/data/all_python_codes.csv")})
+#    return jsonify({"Codes": pd.read_csv("model/data/all_python_codes.csv")})
 
 def python_information(code):
     plagiarism = False
