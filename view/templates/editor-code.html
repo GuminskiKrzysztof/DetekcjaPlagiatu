@@ -29,8 +29,10 @@
         </div>
 
         <div id="right-panel">
-            <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
-            <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+            <div class="analyze-buttons">
+                <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
+                <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+            </div>
             <div id="loading-indicator" style="display: none;">
                 <p>Analizuję...</p>
                 <img src="{{ url_for('static', filename='img/search.gif') }}" style="width: 115px;">
@@ -41,7 +43,6 @@
                 <p id="result-similarity"></p>
                 <div id="result-actions">
                     <button id="show-similar-code" class="analyze-button">Pokaż najbardziej podobny kod</button>
-                    <button id="close-results" class="cancel-button">Zamknij</button>
                 </div>
             </div>
         </div>
