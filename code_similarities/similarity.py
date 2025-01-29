@@ -4,20 +4,21 @@ import math
 import re
 from scipy.stats import norm
 
+
 # Pobranie ramki danych z kodami wykorzystywanymi do doboru wartosci wag
-#data2 = pd.read_csv("C:\\Users\\Admin\\Desktop\\codes_to_weights_choose.csv")
+# data2 = pd.read_csv("C:\\Users\\Admin\\Desktop\\codes_to_weights_choose.csv")
 
 # Funkcje obliczajace wartosci podobienstwa miedzy tekstami
 
 # Względna odległość Hamminga
-def relative_hamming_distance(str1, str2):    
+def relative_hamming_distance(str1, str2):
     # Sprawdzenie, czy oba ciągi znaków są takie same
     if str1 == str2:
         print("Oba ciągi znaków są takie same.")
         return 1
 
     # Dostosowanie długości znaków, jeżeli ciągi znaków mają różną długość
-    
+
     # Przypadek I: Drugi ciąg znaków jest dłuższy od pierwszego ciągu znaków
     if len(str1) < len(str2):
         for i in range(len(str2) - len(str1)):
@@ -39,6 +40,7 @@ def relative_hamming_distance(str1, str2):
     hamming_value = round(1 - hamming_counter / len(str1), 4)
 
     return hamming_value
+
 
 # Odległość Jaro
 def jaro_distance(str1, str2):
@@ -71,7 +73,7 @@ def jaro_distance(str1, str2):
         if licznik_p == 0:
             return 0
 
-        # Licznik transpozycji 
+        # Licznik transpozycji
         licznik_t = 0
         l = 0
 
@@ -89,6 +91,7 @@ def jaro_distance(str1, str2):
             ((licznik_p / len(str1)) + (licznik_p / len(str2)) + ((licznik_p - licznik_t / 2) / licznik_p)) / 3, 4)
 
         return jaro_value
+
 
 # Odległość Jaro - Winklera
 def jaro_winkler_distance(str1, str2):
@@ -121,7 +124,7 @@ def jaro_winkler_distance(str1, str2):
         if licznik_p == 0:
             return 0
 
-        # Licznik transpozycji 
+        # Licznik transpozycji
         licznik_t = 0
         l = 0
 
@@ -157,6 +160,7 @@ def jaro_winkler_distance(str1, str2):
 
         return jaro_winkler_value
 
+
 # Odległość Levenshteina
 def levenshtein_distance(str1, str2, maks):
     # Sprawdzenie, czy dowolny z ciągów znaków nie jest pusty
@@ -168,7 +172,7 @@ def levenshtein_distance(str1, str2, maks):
     # Sprawdzenie, czy ciągi są takie same
     if str1 == str2:
         return 1
-   
+
     # Sprawdzenie, czy pierwsze znaki obu tekstów są takie same
     if str1[0] == str2[0]:
         str1 = str1[1:]
@@ -199,6 +203,7 @@ def levenshtein_distance(str1, str2, maks):
     levenshtein_value = round(1 - macierz[len(str1), len(str2)] / maks, 4)
 
     return levenshtein_value
+
 
 # Odległość Damerau - Levenshteina
 def damerau_levenshtein_distance(str1, str2, maks):
@@ -237,10 +242,11 @@ def damerau_levenshtein_distance(str1, str2, maks):
                 if (i > 1 and j > 1 and str1[i - 1] == str2[j - 2] and str1[i - 2] == str2[j - 1]):
                     macierz[i][j] = min(macierz[i][j], macierz[i - 2][j - 2] + 1)
 
-    # Obliczenie wartości podobieństwa Damerau - Levenshteina            
+    # Obliczenie wartości podobieństwa Damerau - Levenshteina
     damerau_levenshtein_value = round(1 - macierz[len(str1), len(str2)] / maks, 4)
 
     return damerau_levenshtein_value
+
 
 # Odległość Tversky'ego oparta na unigramach
 def tversky_unigrams_distance(alpha, beta, str1, str2):
@@ -289,11 +295,12 @@ def tversky_unigrams_distance(alpha, beta, str1, str2):
                 licznik_yx += str2_dict[k] - str1_dict[k]
         else:
             licznik_yx += str2_dict[k]
-            
+
     # Obliczenie odległości Tversky'ego ze wzoru
     tversky_unigrams_value = round(licznik_wspolny / (licznik_wspolny + alpha * licznik_xy + beta * licznik_yx), 4)
 
     return tversky_unigrams_value
+
 
 # Odległość Tversky'ego oparta na bigramach
 def tversky_bigrams_distance(alpha, beta, str1, str2):
@@ -348,6 +355,7 @@ def tversky_bigrams_distance(alpha, beta, str1, str2):
 
     return tversky_bigrams_value
 
+
 # Odległość Tversky'ego oparta na trigramach
 def tversky_trigrams_distance(alpha, beta, str1, str2):
     # Utworzenie list przechowujących wszystkie dwuznaki ciągów znaków
@@ -400,6 +408,7 @@ def tversky_trigrams_distance(alpha, beta, str1, str2):
     tversky_trigrams_value = round(licznik_wspolny / (licznik_wspolny + alpha * licznik_xy + beta * licznik_yx), 4)
 
     return tversky_trigrams_value
+
 
 # Odległość Jaccarda oparta na unigramach
 def jaccard_unigrams_distance(str1, str2):
@@ -454,6 +463,7 @@ def jaccard_unigrams_distance(str1, str2):
 
     return jaccard_unigrams_value
 
+
 # Odległość Jaccarda oparta na bigramach
 def jaccard_bigrams_distance(str1, str2):
     # Utworzenie list przechowujących wszystkie dwuznaki ciągów znaków
@@ -506,6 +516,7 @@ def jaccard_bigrams_distance(str1, str2):
     jaccard_bigrams_value = licznik_wspolny / (licznik_wspolny + (licznik_xy + licznik_yx) * 0.5)
 
     return round(jaccard_bigrams_value, 4)
+
 
 # Odległość Jaccarda oparta na trigramach
 def jaccard_trigrams_distance(str1, str2):
@@ -560,6 +571,7 @@ def jaccard_trigrams_distance(str1, str2):
 
     return round(jaccard_bigrams_value, 4)
 
+
 # Odległość Hellingera oparta na unigramach
 def hellinger_unigrams_distance(str1, str2):
     # Utworzenie list przechowujących wszystkie znaki ciągów znaków
@@ -590,7 +602,7 @@ def hellinger_unigrams_distance(str1, str2):
     # Utworzenie listy ze znakami występującymi w co najmniej jednym ciągu znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich znaków 
+    # Dodanie do listy wszystkich znaków
     for k in range(len(str12)):
         str12_list.append(str12[k])
 
@@ -613,6 +625,7 @@ def hellinger_unigrams_distance(str1, str2):
     hellinger_unigrams_value = round(1 - np.sqrt(hellinger_unigrams_sum / 2), 4)
 
     return hellinger_unigrams_value
+
 
 # Odległość Hellingera oparta na bigramach
 def hellinger_bigrams_distance(str1, str2):
@@ -644,7 +657,7 @@ def hellinger_bigrams_distance(str1, str2):
     # Utworzenie listy ze dwuznakami występującymi w co najmniej jednym ciągu znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich dwuznaków 
+    # Dodanie do listy wszystkich dwuznaków
     for k in range(len(str12) - 1):
         if k != len(str1) - 1:
             str12_list.append(str12[k:k + 2])
@@ -668,6 +681,7 @@ def hellinger_bigrams_distance(str1, str2):
     hellinger_bigrams_value = round(1 - np.sqrt(hellinger_bigrams_sum / 2), 4)
 
     return hellinger_bigrams_value
+
 
 # Odległość Hellingera oparta na trigramach
 def hellinger_trigrams_distance(str1, str2):
@@ -696,10 +710,10 @@ def hellinger_trigrams_distance(str1, str2):
     # Konkatenacja dwóch ciągów znaków
     str12 = str1 + str2
 
-     # Utworzenie listy ze trójznakami występującymi w co najmniej jednym ciągu znaków
+    # Utworzenie listy ze trójznakami występującymi w co najmniej jednym ciągu znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich trójznaków 
+    # Dodanie do listy wszystkich trójznaków
     for k in range(len(str12) - 1):
         if k != len(str1) - 1 or k != len(str1) - 2:
             str12_list.append(str12[k:k + 3])
@@ -723,6 +737,7 @@ def hellinger_trigrams_distance(str1, str2):
     hellinger_trigrams_value = round(1 - np.sqrt(hellinger_trigrams_sum / 2), 4)
 
     return hellinger_trigrams_value
+
 
 # Odległość Bhattacharyyi oparta na unigramach
 def bhattacharyya_unigrams_distance(str1, str2):
@@ -754,7 +769,7 @@ def bhattacharyya_unigrams_distance(str1, str2):
     # Lista przechowująca wszystkie znaki obu ciągów znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich znaków 
+    # Dodanie do listy wszystkich znaków
     for k in range(len(str12)):
         str12_list.append(str12[k])
 
@@ -773,6 +788,7 @@ def bhattacharyya_unigrams_distance(str1, str2):
     bhattacharyya_unigrams_value = round(bhattacharyya_unigrams_sum, 4)
 
     return bhattacharyya_unigrams_value
+
 
 # Odległość Bhattacharyyi oparta na bigramach
 def bhattacharyya_bigrams_distance(str1, str2):
@@ -800,11 +816,11 @@ def bhattacharyya_bigrams_distance(str1, str2):
 
     # Konkatenacja ciągów znaków
     str12 = str1 + str2
-    
+
     # Lista przechowująca wszystkie dwuznaki obu ciągów znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich dwuznaków 
+    # Dodanie do listy wszystkich dwuznaków
     for k in range(len(str12) - 1):
         if k != len(str1) - 1:
             str12_list.append(str12[k:k + 2])
@@ -824,6 +840,7 @@ def bhattacharyya_bigrams_distance(str1, str2):
     bhattacharyya_bigrams_value = round(bhattacharyya_bigrams_sum, 4)
 
     return bhattacharyya_bigrams_value
+
 
 # Odległość Bhattacharyyi oparta na trigramach
 def bhattacharyya_trigrams_distance(str1, str2):
@@ -855,7 +872,7 @@ def bhattacharyya_trigrams_distance(str1, str2):
     # Lista przechowująca wszystkie trigramy obu ciągów znaków
     str12_list = []
 
-    # Dodanie do listy wszystkich trójznaków 
+    # Dodanie do listy wszystkich trójznaków
     for k in range(len(str12) - 1):
         if k != len(str1) - 1 and k != len(str1) - 2:
             str12_list.append(str12[k:k + 3])
@@ -875,6 +892,7 @@ def bhattacharyya_trigrams_distance(str1, str2):
     bhattacharyya_trigrams_value = round(bhattacharyya_trigrams_sum, 4)
 
     return bhattacharyya_trigrams_value
+
 
 # Względny najdłuższy wspólny podciąg
 def relative_lcs(str1, str2):
@@ -899,6 +917,7 @@ def relative_lcs(str1, str2):
     rlcs_value = round(lcs / max(len(str1), len(str2)), 4)
 
     return rlcs_value
+
 
 # Odległość Szymkiewicza - Simpsona oparta na unigramach
 def Szymkiewicz_Simpson_unigrams(str1, str2):
@@ -935,6 +954,7 @@ def Szymkiewicz_Simpson_unigrams(str1, str2):
 
     return ss_unigrams_value
 
+
 # Odległość Szymkiewicza - Simpsona oparta na bigramach
 def Szymkiewicz_Simpson_bigrams(str1, str2):
     # Utworzenie list przechowujących wszystkie dwuznaki ciągów znaków
@@ -969,6 +989,7 @@ def Szymkiewicz_Simpson_bigrams(str1, str2):
     ss_bigrams_value = round(licznik_wspolny / min(len(str1) - 1, len(str2) - 1), 4)
 
     return ss_bigrams_value
+
 
 # Odległość Szymkiewicza - Simpsona oparta na trigramach
 def Szymkiewicz_Simpson_trigrams(str1, str2):
@@ -1005,9 +1026,10 @@ def Szymkiewicz_Simpson_trigrams(str1, str2):
 
     return round(ss_trigrams_value, 4)
 
+
 # Odległość Dice - Sorensena oparta na unigramach
 def Dice_Sorensen_unigrams(str1, str2):
-    # Utworzenie list przechowujących wszystkie znaki ciągów znaków    
+    # Utworzenie list przechowujących wszystkie znaki ciągów znaków
     str1_list = []
     str2_list = []
 
@@ -1039,6 +1061,7 @@ def Dice_Sorensen_unigrams(str1, str2):
     ds_unigrams_value = round(2 * licznik_wspolny / (len(str1) + len(str2)), 4)
 
     return ds_unigrams_value
+
 
 # Odległość Dice - Sorensena oparta na bigramach
 def Dice_Sorensen_bigrams(str1, str2):
@@ -1074,6 +1097,7 @@ def Dice_Sorensen_bigrams(str1, str2):
     ds_bigrams_value = round(2 * licznik_wspolny / (len(str1) + len(str2) - 2), 4)
 
     return ds_bigrams_value
+
 
 # Odległość Dice - Sorensena oparta na trigramach
 def Dice_Sorensen_trigrams(str1, str2):
@@ -1280,9 +1304,8 @@ def similarity(str1, str2):
     data.loc[0, "Prawdopodobieństwo plagiatu"] = prawdopodobienstwo
     return prawdopodobienstwo
 
-
-#for l in range(len(data2)):
+# for l in range(len(data2)):
 #    print(l)
 #    data2.loc[l, "Prawdopodobienstwo"] = similarity(data2.loc[l, "Kod 1"], data2.loc[l, "Kod 2"])
 
-#data2.to_csv('similarity5.csv')
+# data2.to_csv('similarity5.csv')
