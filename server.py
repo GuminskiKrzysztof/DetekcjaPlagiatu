@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 from pydantic import BaseModel, ValidationError
 
-app = Flask(__name__,template_folder='view/templates')
+app = Flask(__name__,
+            template_folder='view/templates',
+            static_folder='view/static')
 
 
 from model.services import CodeCategorizationService
