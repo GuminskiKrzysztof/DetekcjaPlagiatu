@@ -23,7 +23,7 @@ def saving_codes_to_csv(url):
 
     driver = webdriver.Edge(service=service)
 
-    output_csv_path = "/DetekcjaPlagiatu/backend/data/all_cpp_codes.csv"
+    output_csv_path = "/DetekcjaPlagiatu/model/data/all_cpp_codes.csv"
     codes = []
     driver.get(url)
     consent_button = WebDriverWait(driver, 10).until(
@@ -57,7 +57,7 @@ def saving_codes_to_csv2(url):
 
     driver = webdriver.Edge(service=service)
 
-    output_csv_path = "/DetekcjaPlagiatu/backend/data/all_cpp_codes.csv"
+    output_csv_path = "/DetekcjaPlagiatu/model/data/all_cpp_codes.csv"
     codes = []
     driver.get(url)
     consent_button = WebDriverWait(driver, 10).until(

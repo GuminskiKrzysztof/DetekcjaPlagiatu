@@ -41,33 +41,9 @@ Promise.all([
         fileInput.click();
     });
 
+    // Create stats div immediately after initialization
     createStatsDiv();
     updateFileStats(); // Show initial stats (0/10 files, 0/10MB)
-
-    function generateUniqueFileName(fileName) {
-        const lastDotIndex = fileName.lastIndexOf(".");
-        if (lastDotIndex === -1) {
-            let uniqueName = fileName;
-            let counter = 1;
-            while (files.some(file => file.name.toLowerCase() === uniqueName.toLowerCase())) {
-                uniqueName = `${fileName}(${counter})`;
-                counter++;
-            }
-            return uniqueName;
-        }
-        
-        const namePart = fileName.substring(0, lastDotIndex);
-        const extension = fileName.substring(lastDotIndex);
-        let counter = 1;
-        let uniqueName = fileName;
-
-        while (files.some(file => file.name.toLowerCase() === uniqueName.toLowerCase())) {
-            uniqueName = `${namePart}(${counter})${extension}`;
-            counter++;
-        }
-
-        return uniqueName;
-    }
 
     async function handleZipFile(zipFile) {
         try {
@@ -77,7 +53,7 @@ Promise.all([
             const validFiles = Object.values(zip.files).filter(file => {
                 if (file.dir) return false;
                 const extension = file.name.split('.').pop().toLowerCase();
-                return ['cpp', 'py'].includes(extension);
+                return CONFIG.ALLOWED_EXTENSIONS.includes(extension);
             });
 
             if (files.length + validFiles.length > CONFIG.MAX_FILES) {
@@ -91,13 +67,12 @@ Promise.all([
                     const extension = filename.split('.').pop().toLowerCase();
                     if (['cpp', 'py'].includes(extension)) {
                         const content = await file.async('text');
-                        const uniqueName = generateUniqueFileName(filename);
                         const fileObject = {
-                            id: `file-${Date.now()}-${Math.random()}-${uniqueName}`,
-                            name: uniqueName,
+                            id: `file-${Date.now()}-${filename}`,
+                            name: filename,
                             content: content,
                             fromZip: zipFile.name,
-                            size: file._data.uncompressedSize 
+                            size: file._data.uncompressedSize  // Zapisujemy rozmiar pliku
                         };
                         files.push(fileObject);
                     }
@@ -136,15 +111,13 @@ Promise.all([
                 
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const uniqueName = generateUniqueFileName(file.name);
                     const fileObject = {
-                        id: `file-${Date.now()}-${Math.random()}`,
-                        name: uniqueName,
-                        content: e.target.result,
-                        size: file.size
+                        id: `file-${Date.now()}`, // Dodajemy unikalny identyfikator
+                        name: file.name,
+                        content: e.target.result
                     };
-
                     files.push(fileObject);
+                    
                     const fileItem = createFileElement(fileObject, file);
                     fileListDiv.appendChild(fileItem);
 
@@ -235,11 +208,10 @@ Promise.all([
     }
 
     fileInput.addEventListener("change", function(event) {
-        const filesSelected = Array.from(event.target.files);
-        filesSelected.forEach(file => {
+        const files = Array.from(event.target.files);
+        files.forEach(file => {
             handleFile(file);
         });
-        fileInput.value = "";
     });
 
     nextButton.addEventListener("click", async function() {
@@ -268,7 +240,8 @@ Promise.all([
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
-                const droppedFiles = Array.from(e.dataTransfer.files);
+        
+        const droppedFiles = Array.from(e.dataTransfer.files);
         droppedFiles.forEach(file => {
             handleFile(file);
         });
