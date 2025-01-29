@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     const resultsPanel = document.getElementById("analysis-results");
     const resultTitle = document.getElementById("result-title");
     const resultSimilarity = document.getElementById("result-similarity");
-    const closeResults = document.getElementById("close-results");
     const similarCodeModal = document.getElementById("similar-code-modal");
     const closeModal = document.querySelector(".close-modal");
     const showSimilarCode = document.getElementById("show-similar-code");
@@ -144,6 +143,23 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
+    function generateUniqueFileName(fileName) {
+        const lastDotIndex = fileName.lastIndexOf(".");
+        const namePart = fileName.substring(0, lastDotIndex);
+        const extension = fileName.substring(lastDotIndex);
+        let uniqueName = fileName;
+        let counter = 1;
+
+        while (Array.from(filesContainer.querySelectorAll('.file-wrapper')).some(
+            file => file.dataset.fileName === uniqueName
+        )) {
+            uniqueName = `${namePart}(${counter})${extension}`;
+            counter++;
+        }
+
+        return uniqueName;
+    }
+
     const fileTypeButtons = document.querySelectorAll(".file-type-button");
     fileTypeButtons.forEach(button => {
         button.addEventListener("click", function(e) {
@@ -161,20 +177,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             fileTypeMenu.classList.remove("show");
         });
     });
-
-    function generateUniqueFileName(fileName) {
-        let uniqueName = fileName;
-        let counter = 1;
-        while (fileCodes.has(uniqueName)) {
-            const lastDotIndex = fileName.lastIndexOf(".");
-            const namePart = fileName.substring(0, lastDotIndex);
-            const extension = fileName.substring(lastDotIndex);
-            uniqueName = `${namePart}_${counter}${extension}`;
-            counter++;
-        }
-
-        return uniqueName;
-    }
 
     function createFileElement(fileId, fileName) {
         const fileWrapper = document.createElement("div");
@@ -549,10 +551,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         resultSimilarity.textContent = `Podobieństwo: ${(similarity * 100).toFixed(2)}%`;
     }
-
-    closeResults.addEventListener("click", () => {
-        resultsPanel.style.display = 'none';
-    });
 
     similarCodeEditor = CodeMirror(document.getElementById("similar-code-editor"), {
         mode: "python",

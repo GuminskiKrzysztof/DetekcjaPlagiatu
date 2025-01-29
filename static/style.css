@@ -321,6 +321,13 @@ footer a {
     flex-direction: column;
 }
 
+/* Introductory paragraph */
+.center-main h1 {
+    font-size: 18px;
+    margin: 30px 0;
+    text-align: center;
+}
+
 /* Add project screen */
 #add-project-screen {
     display: flex;
@@ -409,6 +416,7 @@ footer a {
 #right-panel {
     border-left: 1px solid #333;
     align-items: center;
+    gap: 10px;
 }
 
 /* File management */
@@ -883,27 +891,22 @@ li.CodeMirror-hint-active {
 #loading-indicator {
     text-align: center;
     color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    padding: 20px;
 }
 
 #loading-indicator p {
-    margin-bottom: 10px;
-    font-size: 14px;
+    margin: 0;
+    font-size: 18px;
+    margin-bottom: 15px;
 }
 
-.cancel-button {
-    background: #fb6a66;
-    color: #fff;
-    font-size: 14px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-.cancel-button:hover {
-    background: #e55550;
+#loading-indicator img {
+    display: block;
+    margin: 15px auto;
 }
 
 /* Analysis results */
@@ -913,28 +916,46 @@ li.CodeMirror-hint-active {
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.3);
     text-align: center;
+    border-width: 3.5px;
+    border-style: solid;
+    border-color: transparent;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 #analysis-results.success {
-    border: 1px solid #aeff8c;
+    border-color: #aeff8c;
 }
 
 #analysis-results.warning {
-    border: 1px solid #fb6a66;
+    border-color: #fb6a66;
 }
 
 #result-title {
     margin-bottom: 10px;
     font-size: 18px;
+    max-width: 100%;
 }
 
 #result-similarity {
     margin-bottom: 15px;
     font-size: 16px;
+    max-width: 100%;
 }
 
 #result-actions {
     margin-top: 15px;
+    max-width: 100%;
+}
+
+#show-similar-code {
+    white-space: normal;
+    height: auto;
+    min-height: 50px;
+    padding: 10px 20px;
+    line-height: 1.2;
 }
 
 /* File grid layout */
@@ -1073,6 +1094,9 @@ li.CodeMirror-hint-active {
 
 #show-similar-code {
     margin-right: 10px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #next-button.disabled {
@@ -1100,4 +1124,119 @@ li.CodeMirror-hint-active {
 .file-wrapper .status-icon.clean {
     display: block;
     background-color: #aeff8c;
+}
+
+.supported-languages {
+    display: flex;
+    justify-content: flex-end;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.language-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+/* Cancel button */
+.cancel-button {
+    background: #fb6a66;
+    color: #050510;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+    background: #e55550;
+}
+
+/* Right panel layout */
+#right-panel {
+    width: 20%;
+    background: #111;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+    box-shadow: 0 0 10px 0 #00000050;
+}
+
+/* Analysis buttons */
+.analyze-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.analyze-button {
+    width: 100%;
+    background: #aeff8c;
+    color: #050510;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Team members section */
+.team-members {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-member img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border: 3px solid #aeff8c;
+}
+
+.team-member h3 {
+    color: #aeff8c;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.team-member p {
+    color: #fff;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 16px;
 }
