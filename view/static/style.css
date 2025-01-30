@@ -1154,30 +1154,10 @@ li.CodeMirror-hint-active {
     padding: 20px;
     gap: 10px;
     box-shadow: 0 0 10px 0 #00000050;
+    border-left: 1px solid #333;
 }
 
 /* Analysis buttons */
-.analyze-buttons {
-    display: flex;
-    flex-direction: column;
-}
-
-.right-panel-div1 {
-    flex: 0.5;
-    min-height: 100px; /* Mniejsza minimalna wysokość */
-}
-
-.right-panel-div2 {
-    flex: 1.25;
-    height: 33%;
-    justify-content: center;
-}
-
-.right-panel-div3 {
-    flex: 1.25;
-    height: 33%;
-}
-
 .analyze-buttons {
     height: 100%;
     display: flex;
@@ -1194,6 +1174,17 @@ li.CodeMirror-hint-active {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+}
+
+.right-panel-div1 {
+    flex: 0.5;
+    min-height: 100px;
+}
+
+.right-panel-div2,
+.right-panel-div3 {
+    flex: 1.25;
 }
 
 .right-panel-div1 > *,
@@ -1203,6 +1194,7 @@ li.CodeMirror-hint-active {
     height: 100%;
 }
 
+/* Loading indicator and analysis results */
 #loading-indicator,
 #analysis-results {
     display: flex;

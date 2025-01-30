@@ -343,6 +343,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             showLoading();
             const controller = new AbortController();
             currentAnalysis = controller;
+            const fileId = activeFileName;
             
             const response = await fetch(endpoint, {
                 method: "POST",
@@ -374,18 +375,23 @@ document.addEventListener("DOMContentLoaded", async function() {
             const similarity = info[1];
             const currentMatchingCode = String(info[2]?.code || '');
             
-            const statusIcon = fileWrapper.querySelector('.status-icon');
-            statusIcon.classList.remove('plagiarism', 'clean');
-            statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
-            
-            analysisResults.set(activeFileName, {
-                isPlagiarism,
-                similarity,
-                matchingCode: currentMatchingCode
-            });
+            const fileWrapper = filesContainer.querySelector(`[data-file-id="${fileId}"]`);
+            if (fileWrapper) {
+                const statusIcon = fileWrapper.querySelector('.status-icon');
+                statusIcon.classList.remove('plagiarism', 'clean');
+                statusIcon.classList.add(isPlagiarism ? 'plagiarism' : 'clean');
+                
+                analysisResults.set(fileId, {
+                    isPlagiarism,
+                    similarity,
+                    matchingCode: currentMatchingCode
+                });
 
-            showResults(isPlagiarism, similarity);
-            showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+                if (fileId === activeFileName) {
+                    showResults(isPlagiarism, similarity);
+                    showSimilarCode.style.display = isPlagiarism ? 'inline-block' : 'none';
+                }
+            }
             
         } catch (error) {
             if (error.name === 'AbortError') {
