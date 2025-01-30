@@ -300,20 +300,24 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     function hideLoading() {
+        if (currentAnalysis) {
+            currentAnalysis.abort();
+            currentAnalysis = null;
+        }
         analyzeFileButton.style.display = 'block';
         analyzeProjectButton.style.display = 'block';
         loadingIndicator.style.display = 'none';
-        currentAnalysis = null;
     }
 
     cancelButton.addEventListener("click", function() {
-        if (currentAnalysis) {
-            currentAnalysis.abort();
-            hideLoading();
-        }
+        hideLoading();
     });
 
     analyzeFileButton.addEventListener("click", async function() {
+        if (currentAnalysis) {
+            hideLoading(); 
+        }  
+        
         const code = editor.getValue().trim();
         if (!code) {
             alert("Proszę wpisać kod do analizy.");
@@ -353,6 +357,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                 },
                 signal: controller.signal
             });
+
+            if (controller.signal.aborted) {
+                return;
+            }
 
             let data;
             const contentType = response.headers.get("content-type");
@@ -396,16 +404,24 @@ document.addEventListener("DOMContentLoaded", async function() {
         } catch (error) {
             if (error.name === 'AbortError') {
                 console.log('Analiza została anulowana');
+                return;
             } else {
                 console.error("Błąd podczas analizy:", error);
                 alert(`Błąd podczas analizy: ${error.message}`);
             }
         } finally {
+            if (currentAnalysis && currentAnalysis.signal.aborted) {
+                return;
+            }
             hideLoading();
         }
     });
 
     analyzeProjectButton.addEventListener("click", async function() {
+        if (currentAnalysis) {
+            hideLoading();
+        }
+        
         const files = Array.from(filesContainer.querySelectorAll('.file-wrapper'));
         if (files.length === 0) {
             alert("Brak plików do analizy.");
