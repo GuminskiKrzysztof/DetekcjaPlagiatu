@@ -29,20 +29,26 @@
         </div>
 
         <div id="right-panel">
-            <div class="analyze-buttons">
-                <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
-                <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+            <div class="right-panel-div1">
+                <div class="analyze-buttons">
+                    <button id="analyze-file-button" class="analyze-button" title="Analizuj aktywny plik">Analizuj plik</button>
+                    <button id="analyze-project-button" class="analyze-button" title="Analizuj wszystkie pliki">Analizuj wszystko</button>
+                </div>
             </div>
-            <div id="loading-indicator" style="display: none;">
-                <p>Analizuję...</p>
-                <img src="{{ url_for('static', filename='img/search.gif') }}" style="width: 115px;">
-                <button id="cancel-analysis" class="cancel-button">Anuluj</button>
+            <div class="right-panel-div2">
+                <div id="loading-indicator" style="display: none;">
+                    <p>Analizuję...</p>
+                    <img src="{{ url_for('static', filename='img/search.gif') }}" style="width: 115px;">
+                    <button id="cancel-analysis" class="cancel-button">Anuluj</button>
+                </div>
             </div>
-            <div id="analysis-results" style="display: none;">
-                <h3 id="result-title"></h3>
-                <p id="result-similarity"></p>
-                <div id="result-actions">
-                    <button id="show-similar-code" class="analyze-button">Pokaż najbardziej podobny kod</button>
+            <div class="right-panel-div3">
+                <div id="analysis-results" style="display: none;">
+                    <h3 id="result-title"></h3>
+                    <p id="result-similarity"></p>
+                    <div id="result-actions">
+                        <button id="show-similar-code" class="analyze-button">Pokaż najbardziej podobny kod</button>
+                    </div>
                 </div>
             </div>
         </div>

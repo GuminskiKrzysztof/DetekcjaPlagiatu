@@ -888,25 +888,9 @@ li.CodeMirror-hint-active {
 }
 
 /* Loading indicator */
-#loading-indicator {
-    text-align: center;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 25px;
-    padding: 20px;
-}
-
-#loading-indicator p {
-    margin: 0;
-    font-size: 18px;
-    margin-bottom: 15px;
-}
-
 #loading-indicator img {
     display: block;
-    margin: 15px auto;
+    margin-top: 5px;
 }
 
 /* Analysis results */
@@ -923,6 +907,10 @@ li.CodeMirror-hint-active {
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #analysis-results.success {
@@ -1149,7 +1137,6 @@ li.CodeMirror-hint-active {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 15px;
     transition: background-color 0.3s;
 }
 
@@ -1173,23 +1160,57 @@ li.CodeMirror-hint-active {
 .analyze-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 100%;
 }
 
-.analyze-button {
+.right-panel-div1 {
+    flex: 0.5;
+    min-height: 100px; /* Mniejsza minimalna wysokość */
+}
+
+.right-panel-div2 {
+    flex: 1.25;
+    height: 33%;
+    justify-content: center;
+}
+
+.right-panel-div3 {
+    flex: 1.25;
+    height: 33%;
+}
+
+.analyze-buttons {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Right panel divisions */
+.right-panel-div1,
+.right-panel-div2,
+.right-panel-div3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.right-panel-div1 > *,
+.right-panel-div2 > *,
+.right-panel-div3 > * {
     width: 100%;
-    background: #aeff8c;
-    color: #050510;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
-    white-space: nowrap;
+    height: 100%;
+}
+
+#loading-indicator,
+#analysis-results {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }
 
 /* Team members section */

@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     function showLoading() {
         analyzeFileButton.style.display = 'none';
         analyzeProjectButton.style.display = 'none';
-        loadingIndicator.style.display = 'block';
+        loadingIndicator.style.display = 'flex';
         resultsPanel.style.display = 'none';
     }
 
